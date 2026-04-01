@@ -62,7 +62,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;height:var(--nav);background
 .form-group{margin-bottom:16px;position:relative}
 .form-label{display:flex;align-items:center;font-size:11px;font-weight:600;color:var(--t2);margin-bottom:7px;text-transform:uppercase;letter-spacing:.6px}
 .input-wrap{position:relative}
-.input-icon{position:absolute;left:13px;top:50%;transform:translateY(-50%);pointer-events:none}
+.input-icon{position:absolute;left:13px;top:50%;transform:translateY(-50%);pointer-events:none;z-index:2}
 .input-icon svg{width:16px;height:16px;color:var(--t3)}
 .form-input{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:11px 13px 11px 40px;font-family:var(--ff);font-size:14px;font-weight:500;color:var(--t1);transition:all .2s;outline:none}
 .form-input::placeholder{color:var(--t3)}
@@ -101,6 +101,37 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;height:var(--nav);background
 .tbadge svg{width:11px;height:11px;color:var(--green)}
 @keyframes spin{to{transform:rotate(360deg)}}
 .spin{animation:spin .7s linear infinite}
+
+/* ── Phone field with country selector ── */
+.phone-wrap{display:flex;gap:0}
+.country-select{
+  flex-shrink:0;
+  background:var(--bg3);
+  border:1px solid var(--border);
+  border-right:none;
+  border-radius:10px 0 0 10px;
+  padding:0 10px 0 10px;
+  font-family:var(--ff);
+  font-size:13px;
+  font-weight:600;
+  color:var(--t1);
+  cursor:pointer;
+  outline:none;
+  appearance:none;
+  -webkit-appearance:none;
+  transition:all .2s;
+  /* subtle chevron */
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%234A5568'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;
+  background-position:right 8px center;
+  padding-right:24px;
+  min-width:90px;
+}
+.country-select:focus{border-color:var(--borderAcc);background-color:var(--bg2);box-shadow:0 0 0 3px var(--accentBg)}
+[data-theme="light"] .country-select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%2394A3B8'/%3E%3C/svg%3E")}
+.phone-wrap .form-input{border-radius:0 10px 10px 0;padding-left:13px}
+.phone-wrap .form-input:focus{border-color:var(--borderAcc);background:var(--bg2);box-shadow:0 0 0 3px var(--accentBg)}
+
 @media(max-width:520px){.auth-card{padding:24px 18px;border-radius:16px}.form-row{grid-template-columns:1fr}nav{padding:0 14px}}
 </style>
 </head>
@@ -164,11 +195,26 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;height:var(--nav);background
           <div class="input-wrap"><div class="input-icon"><svg data-lucide="mail"></svg></div><input type="email" id="email" class="form-input" placeholder="you@example.com" autocomplete="email" required></div>
           <div class="form-hint" id="emailHint"></div>
         </div>
+
+        <!-- ── Phone with country selector ── -->
         <div class="form-group">
           <label class="form-label" for="phone">Phone (Optional)</label>
-          <div class="input-wrap"><div class="input-icon"><svg data-lucide="phone"></svg></div><input type="tel" id="phone" class="form-input" placeholder="+233 20 000 0000" autocomplete="tel"></div>
+          <div class="phone-wrap">
+            <select class="country-select" id="countryCode" onchange="updatePhonePlaceholder()" aria-label="Country code">
+              <option value="+233" data-placeholder="20 000 0000"   data-flag="🇬🇭">🇬🇭 +233</option>
+              <option value="+234" data-placeholder="803 000 0000"  data-flag="🇳🇬">🇳🇬 +234</option>
+              <option value="+44"  data-placeholder="7700 900000"   data-flag="🇬🇧">🇬🇧 +44</option>
+              <option value="+49"  data-placeholder="151 00000000"  data-flag="🇩🇪">🇩🇪 +49</option>
+              <option value="+33"  data-placeholder="6 00 00 00 00" data-flag="🇫🇷">🇫🇷 +33</option>
+              <option value="+34"  data-placeholder="612 000 000"   data-flag="🇪🇸">🇪🇸 +34</option>
+              <option value="+39"  data-placeholder="312 000 0000"  data-flag="🇮🇹">🇮🇹 +39</option>
+              <option value="+31"  data-placeholder="6 12345678"    data-flag="🇳🇱">🇳🇱 +31</option>
+            </select>
+            <input type="tel" id="phone" class="form-input" placeholder="20 000 0000" autocomplete="tel">
+          </div>
           <div class="form-hint" id="phoneHint"></div>
         </div>
+
         <div class="form-group">
           <label class="form-label" for="password">Password</label>
           <div class="input-wrap"><div class="input-icon"><svg data-lucide="lock"></svg></div><input type="password" id="password" class="form-input" placeholder="Min. 8 characters" autocomplete="new-password" required oninput="checkStrength(this.value)"><button type="button" class="pw-toggle" onclick="togglePw('password','eye1')"><svg data-lucide="eye" id="eye1"></svg></button></div>
@@ -204,9 +250,15 @@ const BASE = 'https://kikiwebbackend.onrender.com';
 
 window.addEventListener('load', () => lucide.createIcons());
 
-// ── Only redirect away if already logged in (check both storages) ──
 if (localStorage.getItem('gstake_token') || sessionStorage.getItem('gstake_token')) {
   window.location.href = 'index.html';
+}
+
+// ── Update phone placeholder when country changes ──
+function updatePhonePlaceholder() {
+  const sel = document.getElementById('countryCode');
+  const opt = sel.options[sel.selectedIndex];
+  document.getElementById('phone').placeholder = opt.dataset.placeholder;
 }
 
 function toggleTheme(){const dark=document.documentElement.getAttribute('data-theme')==='dark';document.documentElement.setAttribute('data-theme',dark?'light':'dark');document.getElementById('themeIco').setAttribute('data-lucide',dark?'sun':'moon');lucide.createIcons()}
@@ -232,14 +284,17 @@ async function handleRegister(e){
   const g=id=>document.getElementById(id);
   const alertBox=g('alertBox'); alertBox.classList.remove('show');
   const firstName=g('firstName').value.trim(),lastName=g('lastName').value.trim(),
-        email=g('email').value.trim(),phone=g('phone').value.trim(),
+        email=g('email').value.trim(),
+        dialCode=g('countryCode').value,
+        rawPhone=g('phone').value.trim(),
+        phone=rawPhone ? dialCode + rawPhone.replace(/^0+/,'') : '',
         password=g('password').value,confirmPassword=g('confirmPassword').value,terms=g('terms').checked;
 
   const showErr=msg=>{g('alertMsg').textContent=msg;alertBox.classList.add('show')};
   if(firstName.length<2){showErr('First name must be at least 2 characters.');return}
   if(lastName.length<2){showErr('Last name must be at least 2 characters.');return}
   if(!vEmail(email)){showErr('Enter a valid email address.');return}
-  if(phone&&!vPhone(phone)){showErr('Enter a valid phone number.');return}
+  if(rawPhone&&!vPhone(rawPhone)){showErr('Enter a valid phone number.');return}
   if(password.length<8){showErr('Password must be at least 8 characters.');return}
   if(password!==confirmPassword){showErr('Passwords do not match.');return}
   if(!terms){showErr('You must accept the Terms & Conditions.');return}
@@ -266,7 +321,6 @@ async function handleRegister(e){
       g('progressBar').style.display='none';
       g('successState').classList.add('show');
       lucide.createIcons();
-      // ── relative path, works on both file:// and Live Server ──
       setTimeout(()=>window.location.href='index.html', 2000);
     } else {
       throw new Error(data.message||'Registration failed. Please try again.');
