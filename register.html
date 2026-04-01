@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>GStake — Register Free</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=Barlow+Condensed:wght@600;700;800&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+<style>
+:root{--bg0:#07090F;--bg1:#0C101A;--bg2:#131825;--bg3:#1B2235;--accent:#F5A623;--accentBg:rgba(245,166,35,0.10);--accentBg2:rgba(245,166,35,0.18);--green:#22C55E;--greenBg:rgba(34,197,94,0.12);--red:#EF4444;--redBg:rgba(239,68,68,0.10);--blue:#60A5FA;--blueBg:rgba(96,165,250,0.08);--t1:#EEF2FF;--t2:#8892A8;--t3:#4A5568;--border:rgba(255,255,255,0.055);--borderHov:rgba(255,255,255,0.11);--borderAcc:rgba(245,166,35,0.4);--shadow:0 8px 40px rgba(0,0,0,0.6);--ff:'DM Sans',sans-serif;--ffC:'Barlow Condensed',sans-serif;--nav:60px}
+[data-theme="light"]{--bg0:#EEF1F8;--bg1:#F7F9FF;--bg2:#FFFFFF;--bg3:#FFFFFF;--accent:#C8820A;--accentBg:rgba(200,130,10,0.08);--green:#16A34A;--greenBg:rgba(22,163,74,0.09);--red:#DC2626;--redBg:rgba(220,38,38,0.09);--t1:#0F172A;--t2:#475569;--t3:#94A3B8;--border:rgba(0,0,0,0.065);--borderHov:rgba(0,0,0,0.13);--borderAcc:rgba(200,130,10,0.45);--shadow:0 8px 40px rgba(0,0,0,0.10)}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;-webkit-tap-highlight-color:transparent}
+body{font-family:var(--ff);background:var(--bg0);color:var(--t1);min-height:100vh;overflow-x:hidden;line-height:1.5;transition:background .25s,color .25s}
+body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear-gradient(rgba(245,166,35,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(245,166,35,0.03) 1px,transparent 1px);background-size:40px 40px;pointer-events:none}
+.blob{position:fixed;border-radius:50%;filter:blur(90px);pointer-events:none;z-index:0}
+.blob-1{width:550px;height:550px;top:-160px;right:-100px;background:rgba(245,166,35,0.07)}
+.blob-2{width:400px;height:400px;bottom:-80px;left:-80px;background:rgba(34,197,94,0.04)}
+nav{position:fixed;top:0;left:0;right:0;z-index:200;height:var(--nav);background:rgba(7,9,15,0.95);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 24px;gap:16px}
+[data-theme="light"] nav{background:rgba(247,249,255,0.96)}
+.logo{font-family:var(--ffC);font-size:26px;font-weight:800;letter-spacing:1px;color:var(--t1);text-decoration:none;flex:1}
+.logo em{color:var(--accent);font-style:normal}
+.nav-right{display:flex;align-items:center;gap:8px}
+.icon-btn{background:transparent;border:1px solid var(--border);width:38px;height:38px;border-radius:9px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .15s}
+.icon-btn:hover{border-color:var(--borderHov);background:var(--bg3)}
+.icon-btn svg{width:16px;height:16px;color:var(--t2)}
+.nav-link{font-size:13px;font-weight:600;color:var(--t2);text-decoration:none;padding:8px 14px;border-radius:9px;border:1px solid var(--border);transition:all .15s}
+.nav-link:hover{border-color:var(--borderHov);color:var(--t1);background:var(--bg3)}
+.page{position:relative;z-index:1;min-height:100vh;padding-top:var(--nav);display:flex;flex-direction:column}
+.auth-wrap{flex:1;display:grid;grid-template-columns:1fr;align-items:start;max-width:980px;margin:0 auto;width:100%;padding:36px 16px 60px;gap:32px}
+@media(min-width:820px){.auth-wrap{grid-template-columns:1fr 1fr;align-items:center;padding:48px 24px 72px}}
+.perks-panel{display:none}
+@media(min-width:820px){.perks-panel{display:flex;flex-direction:column;gap:24px;padding-right:16px}}
+.perks-logo{font-family:var(--ffC);font-size:36px;font-weight:800;letter-spacing:1px;margin-bottom:6px}
+.perks-logo em{color:var(--accent);font-style:normal}
+.perks-tag{font-size:14px;color:var(--t2);line-height:1.7;margin-bottom:24px;max-width:320px}
+.perk{display:flex;gap:14px;align-items:flex-start}
+.perk-icon{width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;border:1px solid}
+.perk-icon svg{width:19px;height:19px}
+.perk-icon.gold{background:var(--accentBg);border-color:var(--borderAcc)}.perk-icon.gold svg{color:var(--accent)}
+.perk-icon.green{background:var(--greenBg);border-color:rgba(34,197,94,.2)}.perk-icon.green svg{color:var(--green)}
+.perk-icon.blue{background:var(--blueBg);border-color:rgba(96,165,250,.15)}.perk-icon.blue svg{color:var(--blue)}
+.perk-body h4{font-family:var(--ffC);font-size:16px;font-weight:700;margin-bottom:3px}
+.perk-body p{font-size:12px;color:var(--t2);line-height:1.6}
+.perks-stat-row{display:flex;gap:14px;margin-top:8px;flex-wrap:wrap}
+.pstat{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:12px 16px;flex:1;min-width:90px}
+.pstat-val{font-family:var(--ffC);font-size:22px;font-weight:800;color:var(--accent)}
+.pstat-lbl{font-size:11px;color:var(--t3);margin-top:2px}
+.auth-card{width:100%;background:var(--bg2);border:1px solid var(--border);border-radius:20px;padding:36px 32px;box-shadow:var(--shadow);animation:slideUp .45s cubic-bezier(.22,.68,0,1.2) both}
+@keyframes slideUp{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:translateY(0)}}
+.auth-header{margin-bottom:28px}
+.auth-title{font-family:var(--ffC);font-size:26px;font-weight:800;letter-spacing:.5px;margin-bottom:4px}
+.auth-sub{font-size:13px;color:var(--t2)}
+.auth-sub a{color:var(--accent);text-decoration:none;font-weight:600}
+.auth-sub a:hover{text-decoration:underline}
+.progress-bar{display:flex;gap:4px;margin-bottom:28px}
+.pstep{flex:1;height:3px;border-radius:3px;background:var(--border);transition:background .3s}
+.pstep.done{background:var(--accent)}
+.pstep.active{background:linear-gradient(90deg,var(--accent) 60%,var(--border))}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.form-group{margin-bottom:16px;position:relative}
+.form-label{display:flex;align-items:center;font-size:11px;font-weight:600;color:var(--t2);margin-bottom:7px;text-transform:uppercase;letter-spacing:.6px}
+.input-wrap{position:relative}
+.input-icon{position:absolute;left:13px;top:50%;transform:translateY(-50%);pointer-events:none}
+.input-icon svg{width:16px;height:16px;color:var(--t3)}
+.form-input{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:11px 13px 11px 40px;font-family:var(--ff);font-size:14px;font-weight:500;color:var(--t1);transition:all .2s;outline:none}
+.form-input::placeholder{color:var(--t3)}
+.form-input:focus{border-color:var(--borderAcc);background:var(--bg2);box-shadow:0 0 0 3px var(--accentBg)}
+.form-input.valid{border-color:var(--green)}.form-input.error{border-color:var(--red)}
+.pw-toggle{position:absolute;right:12px;top:50%;transform:translateY(-50%);cursor:pointer;background:none;border:none;color:var(--t3);padding:4px;display:flex;align-items:center;transition:color .15s}
+.pw-toggle:hover{color:var(--t2)}.pw-toggle svg{width:16px;height:16px}
+.pw-strength{display:flex;gap:4px;margin-top:6px}
+.pwb{flex:1;height:3px;border-radius:3px;background:var(--border);transition:background .3s}
+.strength-label{font-size:11px;margin-top:4px;color:var(--t3)}
+.form-hint{font-size:11px;margin-top:4px;color:var(--t3);display:flex;align-items:center;gap:4px;min-height:16px}
+.form-hint svg{width:11px;height:11px;flex-shrink:0}
+.form-hint.err{color:var(--red)}.form-hint.ok{color:var(--green)}
+.form-check{display:flex;align-items:flex-start;gap:10px;margin-bottom:22px;cursor:pointer;user-select:none}
+.custom-cb{width:18px;height:18px;border:1.5px solid var(--border);border-radius:5px;flex-shrink:0;display:flex;align-items:center;justify-content:center;background:var(--bg3);transition:all .15s;margin-top:1px}
+.form-check input[type=checkbox]{position:absolute;opacity:0;width:0;height:0}
+.form-check input[type=checkbox]:checked ~ .custom-cb{background:var(--accent);border-color:var(--accent)}
+.form-check input[type=checkbox]:checked ~ .custom-cb svg{display:block}
+.custom-cb svg{display:none;width:11px;height:11px;color:#000}
+.check-label{font-size:12px;color:var(--t2);line-height:1.6}
+.check-label a{color:var(--accent);text-decoration:none}
+.check-label a:hover{text-decoration:underline}
+.alert{display:none;background:var(--redBg);border:1px solid rgba(239,68,68,.25);border-radius:10px;padding:11px 13px;margin-bottom:16px;font-size:13px;color:var(--red);align-items:center;gap:9px}
+.alert.show{display:flex}.alert svg{width:15px;height:15px;flex-shrink:0}
+.success-state{display:none;flex-direction:column;align-items:center;text-align:center;padding:24px 0;gap:16px}
+.success-state.show{display:flex}
+.success-ico{width:64px;height:64px;background:var(--greenBg);border:1px solid rgba(34,197,94,.25);border-radius:50%;display:flex;align-items:center;justify-content:center}
+.success-ico svg{width:28px;height:28px;color:var(--green)}
+.success-state h3{font-family:var(--ffC);font-size:22px;font-weight:800}
+.success-state p{font-size:13px;color:var(--t2);max-width:260px;line-height:1.6}
+.btn-primary{width:100%;padding:13px;border-radius:11px;background:var(--accent);color:#000;font-family:var(--ffC);font-size:17px;font-weight:800;letter-spacing:.6px;text-transform:uppercase;border:none;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:9px;box-shadow:0 4px 20px rgba(245,166,35,.3)}
+.btn-primary:hover{filter:brightness(1.1);transform:translateY(-2px);box-shadow:0 8px 32px rgba(245,166,35,.45)}
+.btn-primary:active{transform:translateY(0)}.btn-primary svg{width:18px;height:18px}.btn-primary.loading{opacity:.7;pointer-events:none}
+.trust-row{display:flex;gap:6px;margin-top:18px;flex-wrap:wrap;justify-content:center}
+.tbadge{display:inline-flex;align-items:center;gap:5px;font-size:11px;color:var(--t3);background:var(--accentBg);border:1px solid var(--border);border-radius:20px;padding:4px 10px}
+.tbadge svg{width:11px;height:11px;color:var(--green)}
+@keyframes spin{to{transform:rotate(360deg)}}
+.spin{animation:spin .7s linear infinite}
+@media(max-width:520px){.auth-card{padding:24px 18px;border-radius:16px}.form-row{grid-template-columns:1fr}nav{padding:0 14px}}
+</style>
+</head>
+<body>
+<div class="blob blob-1"></div>
+<div class="blob blob-2"></div>
+<nav>
+  <a href="index.html" class="logo">G<em>S</em>TAKE</a>
+  <div class="nav-right">
+    <div class="icon-btn" onclick="toggleTheme()"><svg data-lucide="moon" id="themeIco"></svg></div>
+    <a href="login.html" class="nav-link">Sign In</a>
+  </div>
+</nav>
+<div class="page">
+  <div class="auth-wrap">
+    <div class="perks-panel">
+      <div>
+        <div class="perks-logo">G<em>S</em>TAKE</div>
+        <div class="perks-tag">Ghana's premier sports betting platform. Join thousands already winning big with real-time odds.</div>
+      </div>
+      <div class="perk"><div class="perk-icon gold"><svg data-lucide="zap"></svg></div><div class="perk-body"><h4>Instant Deposits & Withdrawals</h4><p>Fund via MTN MoMo, AirtelTigo or Vodafone Cash in seconds.</p></div></div>
+      <div class="perk"><div class="perk-icon green"><svg data-lucide="bar-chart-2"></svg></div><div class="perk-body"><h4>Live Odds on 6 Leagues + WC 2026</h4><p>Premier League, UCL, La Liga, Bundesliga, Serie A, Ligue 1 and FIFA World Cup.</p></div></div>
+      <div class="perk"><div class="perk-icon blue"><svg data-lucide="shield-check"></svg></div><div class="perk-body"><h4>Licensed & Secure</h4><p>Regulated by the Gaming Commission of Ghana. Your funds are 100% protected.</p></div></div>
+      <div class="perks-stat-row">
+        <div class="pstat"><div class="pstat-val">50K+</div><div class="pstat-lbl">Active Users</div></div>
+        <div class="pstat"><div class="pstat-val">GH₵</div><div class="pstat-lbl">Local Currency</div></div>
+        <div class="pstat"><div class="pstat-val">24/7</div><div class="pstat-lbl">Support</div></div>
+      </div>
+    </div>
+    <div class="auth-card">
+      <div class="auth-header">
+        <div class="auth-title">Create Your Account</div>
+        <div class="auth-sub">Already have an account? <a href="login.html">Sign in →</a></div>
+      </div>
+      <div class="progress-bar" id="progressBar">
+        <div class="pstep active" id="ps1"></div>
+        <div class="pstep" id="ps2"></div>
+        <div class="pstep" id="ps3"></div>
+      </div>
+      <div class="alert" id="alertBox"><svg data-lucide="alert-circle"></svg><span id="alertMsg"></span></div>
+      <div class="success-state" id="successState">
+        <div class="success-ico"><svg data-lucide="check-circle"></svg></div>
+        <h3>Account Created! 🎉</h3>
+        <p>Welcome to GStake. Redirecting you to the home page…</p>
+      </div>
+      <form id="registerForm" onsubmit="handleRegister(event)" novalidate>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label" for="firstName">First Name</label>
+            <div class="input-wrap"><div class="input-icon"><svg data-lucide="user"></svg></div><input type="text" id="firstName" class="form-input" placeholder="John" autocomplete="given-name" required></div>
+            <div class="form-hint" id="fnHint"></div>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="lastName">Last Name</label>
+            <div class="input-wrap"><div class="input-icon"><svg data-lucide="user"></svg></div><input type="text" id="lastName" class="form-input" placeholder="Doe" autocomplete="family-name" required></div>
+            <div class="form-hint" id="lnHint"></div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="email">Email Address</label>
+          <div class="input-wrap"><div class="input-icon"><svg data-lucide="mail"></svg></div><input type="email" id="email" class="form-input" placeholder="you@example.com" autocomplete="email" required></div>
+          <div class="form-hint" id="emailHint"></div>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="phone">Phone (Optional)</label>
+          <div class="input-wrap"><div class="input-icon"><svg data-lucide="phone"></svg></div><input type="tel" id="phone" class="form-input" placeholder="+233 20 000 0000" autocomplete="tel"></div>
+          <div class="form-hint" id="phoneHint"></div>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="password">Password</label>
+          <div class="input-wrap"><div class="input-icon"><svg data-lucide="lock"></svg></div><input type="password" id="password" class="form-input" placeholder="Min. 8 characters" autocomplete="new-password" required oninput="checkStrength(this.value)"><button type="button" class="pw-toggle" onclick="togglePw('password','eye1')"><svg data-lucide="eye" id="eye1"></svg></button></div>
+          <div class="pw-strength" id="pwStrength"><div class="pwb" id="pwb1"></div><div class="pwb" id="pwb2"></div><div class="pwb" id="pwb3"></div><div class="pwb" id="pwb4"></div></div>
+          <div class="strength-label" id="strengthLbl"></div>
+          <div class="form-hint" id="pwHint"></div>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="confirmPassword">Confirm Password</label>
+          <div class="input-wrap"><div class="input-icon"><svg data-lucide="lock"></svg></div><input type="password" id="confirmPassword" class="form-input" placeholder="Repeat your password" autocomplete="new-password" required><button type="button" class="pw-toggle" onclick="togglePw('confirmPassword','eye2')"><svg data-lucide="eye" id="eye2"></svg></button></div>
+          <div class="form-hint" id="cpHint"></div>
+        </div>
+        <label class="form-check">
+          <input type="checkbox" id="terms" required>
+          <div class="custom-cb"><svg data-lucide="check"></svg></div>
+          <span class="check-label">I agree to the <a href="#">Terms & Conditions</a> and <a href="#">Privacy Policy</a>. I confirm I am 18+.</span>
+        </label>
+        <button type="submit" class="btn-primary" id="submitBtn">
+          <svg data-lucide="user-plus" id="submitIco"></svg>
+          <span id="submitTxt">Create Free Account</span>
+        </button>
+      </form>
+      <div class="trust-row">
+        <span class="tbadge"><svg data-lucide="shield-check"></svg>Licensed Ghana</span>
+        <span class="tbadge"><svg data-lucide="lock"></svg>Encrypted</span>
+        <span class="tbadge"><svg data-lucide="zap"></svg>Instant Access</span>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+const BASE = 'http://localhost:8080';
+
+window.addEventListener('load', () => lucide.createIcons());
+
+// ── Only redirect away if already logged in (check both storages) ──
+if (localStorage.getItem('gstake_token') || sessionStorage.getItem('gstake_token')) {
+  window.location.href = 'index.html';
+}
+
+function toggleTheme(){const dark=document.documentElement.getAttribute('data-theme')==='dark';document.documentElement.setAttribute('data-theme',dark?'light':'dark');document.getElementById('themeIco').setAttribute('data-lucide',dark?'sun':'moon');lucide.createIcons()}
+function togglePw(id,iconId){const inp=document.getElementById(id),ico=document.getElementById(iconId);inp.type=inp.type==='password'?'text':'password';ico.setAttribute('data-lucide',inp.type==='text'?'eye-off':'eye');lucide.createIcons()}
+function setHint(id,msg,type){const el=document.getElementById(id);if(!msg){el.innerHTML='';el.className='form-hint';return}const icon=type==='err'?'x-circle':type==='ok'?'check-circle':'info';el.innerHTML=`<svg data-lucide="${icon}"></svg>${msg}`;el.className='form-hint '+(type||'');lucide.createIcons()}
+function checkStrength(val){const colours=['var(--red)','#F97316','#EAB308','var(--green)'],labels=['Weak','Fair','Good','Strong'];let s=0;if(val.length>=8)s++;if(/[A-Z]/.test(val))s++;if(/[0-9]/.test(val))s++;if(/[^A-Za-z0-9]/.test(val))s++;['pwb1','pwb2','pwb3','pwb4'].forEach((b,i)=>{document.getElementById(b).style.background=i<s?colours[s-1]:'var(--border)'});const lbl=document.getElementById('strengthLbl');lbl.textContent=val.length?labels[s-1]||'':'';lbl.style.color=val.length?colours[s-1]:'var(--t3)'}
+const vEmail=v=>/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
+const vPhone=v=>!v||/^[+\d\s\-()]{7,16}$/.test(v);
+function blurV(iid,hid,fn,ok,err){document.getElementById(iid).addEventListener('blur',function(){if(!this.value)return;const v=fn(this.value);this.classList.toggle('valid',v);this.classList.toggle('error',!v);setHint(hid,v?ok:err,v?'ok':'err')})}
+blurV('firstName','fnHint',v=>v.trim().length>=2,'Looks good!','At least 2 characters.');
+blurV('lastName','lnHint',v=>v.trim().length>=2,'Looks good!','At least 2 characters.');
+blurV('email','emailHint',vEmail,'Valid email!','Enter a valid email.');
+blurV('phone','phoneHint',vPhone,'Valid number!','Enter a valid phone number.');
+blurV('password','pwHint',v=>v.length>=8,'','At least 8 characters.');
+document.getElementById('confirmPassword').addEventListener('blur',function(){const pw=document.getElementById('password').value;const ok=this.value===pw&&this.value.length>0;this.classList.toggle('valid',ok);this.classList.toggle('error',!ok);setHint('cpHint',ok?'Passwords match!':'Passwords do not match.',ok?'ok':'err')});
+document.getElementById('firstName').addEventListener('input',()=>setProgress(1));
+document.getElementById('email').addEventListener('input',()=>setProgress(2));
+document.getElementById('password').addEventListener('input',()=>setProgress(3));
+function setProgress(step){for(let i=1;i<=3;i++){const el=document.getElementById('ps'+i);el.className='pstep '+(i<step?'done':i===step?'active':'')}}
+
+async function handleRegister(e){
+  e.preventDefault();
+  const g=id=>document.getElementById(id);
+  const alertBox=g('alertBox'); alertBox.classList.remove('show');
+  const firstName=g('firstName').value.trim(),lastName=g('lastName').value.trim(),
+        email=g('email').value.trim(),phone=g('phone').value.trim(),
+        password=g('password').value,confirmPassword=g('confirmPassword').value,terms=g('terms').checked;
+
+  const showErr=msg=>{g('alertMsg').textContent=msg;alertBox.classList.add('show')};
+  if(firstName.length<2){showErr('First name must be at least 2 characters.');return}
+  if(lastName.length<2){showErr('Last name must be at least 2 characters.');return}
+  if(!vEmail(email)){showErr('Enter a valid email address.');return}
+  if(phone&&!vPhone(phone)){showErr('Enter a valid phone number.');return}
+  if(password.length<8){showErr('Password must be at least 8 characters.');return}
+  if(password!==confirmPassword){showErr('Passwords do not match.');return}
+  if(!terms){showErr('You must accept the Terms & Conditions.');return}
+
+  const btn=g('submitBtn'),ico=g('submitIco'),txt=g('submitTxt');
+  btn.classList.add('loading'); ico.removeAttribute('class'); ico.className='spin';
+  ico.setAttribute('data-lucide','loader'); txt.textContent='Creating your account…'; lucide.createIcons();
+
+  try {
+    const body={firstName,lastName,email,password};
+    if(phone) body.phoneNumber=phone;
+    const res=await fetch(`${BASE}/api/v1/users/register`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+    const data=await res.json();
+    if(res.ok&&data.data?.token){
+      localStorage.setItem('gstake_token', data.data.token);
+      localStorage.setItem('gstake_user', JSON.stringify({
+        email:     data.data.email     || email,
+        firstName: data.data.firstName || firstName,
+        lastName:  data.data.lastName  || lastName,
+        role:      data.data.role      || 'USER',
+        currency:  data.data.currency  || 'GHS',
+      }));
+      g('registerForm').style.display='none';
+      g('progressBar').style.display='none';
+      g('successState').classList.add('show');
+      lucide.createIcons();
+      // ── relative path, works on both file:// and Live Server ──
+      setTimeout(()=>window.location.href='index.html', 2000);
+    } else {
+      throw new Error(data.message||'Registration failed. Please try again.');
+    }
+  } catch(err){
+    showErr(err.message);
+    btn.classList.remove('loading'); ico.removeAttribute('class');
+    ico.setAttribute('data-lucide','user-plus'); txt.textContent='Create Free Account'; lucide.createIcons();
+  }
+}
+</script>
+</body>
+</html>

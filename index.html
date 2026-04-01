@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>GStake — Bet Smarter</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=Barlow+Condensed:wght@600;700;800&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+<style>
+:root {
+  --bg0:#07090F;--bg1:#0C101A;--bg2:#131825;--bg3:#1B2235;
+  --accent:#F5A623;--accentBg:rgba(245,166,35,0.10);--accentBg2:rgba(245,166,35,0.18);
+  --green:#22C55E;--greenBg:rgba(34,197,94,0.12);
+  --red:#EF4444;--redBg:rgba(239,68,68,0.10);
+  --blue:#60A5FA;--blueBg:rgba(96,165,250,0.08);
+  --purple:#A78BFA;--purpleBg:rgba(167,139,250,0.08);
+  --t1:#EEF2FF;--t2:#8892A8;--t3:#4A5568;
+  --border:rgba(255,255,255,0.055);--borderHov:rgba(255,255,255,0.11);--borderAcc:rgba(245,166,35,0.4);
+  --shadow:0 8px 40px rgba(0,0,0,0.6);
+  --r:10px;--rLg:14px;
+  --ff:'DM Sans',sans-serif;--ffC:'Barlow Condensed',sans-serif;
+  --nav:66px;
+}
+[data-theme="light"]{
+  --bg0:#EEF1F8;--bg1:#F7F9FF;--bg2:#FFFFFF;--bg3:#FFFFFF;
+  --accent:#C8820A;--accentBg:rgba(200,130,10,0.08);--accentBg2:rgba(200,130,10,0.15);
+  --green:#16A34A;--greenBg:rgba(22,163,74,0.09);
+  --red:#DC2626;--redBg:rgba(220,38,38,0.09);
+  --blue:#2563EB;--blueBg:rgba(37,99,235,0.07);
+  --purple:#7C3AED;--purpleBg:rgba(124,58,237,0.07);
+  --t1:#0F172A;--t2:#475569;--t3:#94A3B8;
+  --border:rgba(0,0,0,0.065);--borderHov:rgba(0,0,0,0.13);--borderAcc:rgba(200,130,10,0.45);
+  --shadow:0 8px 40px rgba(0,0,0,0.10);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;-webkit-tap-highlight-color:transparent}
+body{font-family:var(--ff);background:var(--bg0);color:var(--t1);min-height:100vh;overflow-x:hidden;line-height:1.5;transition:background .25s,color .25s}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:200;height:var(--nav);background:rgba(7,9,15,0.95);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 24px}
+[data-theme="light"] nav{background:rgba(247,249,255,0.96)}
+.logo{font-family:var(--ffC);font-size:26px;font-weight:800;letter-spacing:1px;color:var(--t1);text-decoration:none;flex-shrink:0;margin-right:28px}
+.logo em{color:var(--accent);font-style:normal}
+.nav-links{display:flex;gap:2px;flex:1;justify-content:center}
+.nav-links a{font-size:13px;font-weight:500;color:var(--t2);text-decoration:none;padding:7px 13px;border-radius:8px;transition:all .15s;white-space:nowrap;display:flex;align-items:center;gap:5px}
+.nav-links a svg{width:14px;height:14px}
+.nav-links a:hover{color:var(--t1);background:var(--border)}
+.nav-links a.active{color:var(--accent);background:var(--accentBg)}
+.nav-right{display:flex;align-items:center;gap:8px;flex-shrink:0;margin-left:28px}
+.icon-btn{background:transparent;border:1px solid var(--border);width:38px;height:38px;border-radius:9px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .15s;flex-shrink:0;text-decoration:none}
+.icon-btn:hover{border-color:var(--borderHov);background:var(--bg3)}
+.icon-btn svg{width:16px;height:16px;color:var(--t2)}
+.nav-auth{display:flex;gap:8px;align-items:center}
+.btn-signin{background:transparent;border:1px solid var(--border);color:var(--t1);padding:8px 18px;border-radius:9px;font-family:var(--ff);font-weight:600;font-size:13px;cursor:pointer;transition:all .15s;text-decoration:none;display:inline-flex;align-items:center}
+.btn-signin:hover{border-color:var(--borderHov);background:var(--bg3)}
+.btn-register{background:var(--accent);border:none;color:#000;padding:8px 18px;border-radius:9px;font-family:var(--ff);font-weight:700;font-size:13px;cursor:pointer;transition:all .15s;text-decoration:none;display:inline-flex;align-items:center}
+.btn-register:hover{filter:brightness(1.1)}
+.nav-user{display:flex;align-items:center;gap:8px}
+.nav-balance-pill{display:flex;align-items:center;gap:6px;background:var(--accentBg);border:1px solid var(--borderAcc);border-radius:9px;padding:6px 12px;font-size:13px;font-weight:600;color:var(--accent);text-decoration:none;white-space:nowrap;transition:all .15s}
+.nav-balance-pill:hover{background:var(--accentBg2)}
+.nav-balance-pill svg{width:13px;height:13px}
+.nav-avatar{width:38px;height:38px;border-radius:9px;border:1px solid var(--borderAcc);background:var(--accentBg);display:flex;align-items:center;justify-content:center;font-family:var(--ffC);font-size:13px;font-weight:800;color:var(--accent);text-decoration:none;flex-shrink:0;transition:all .15s;letter-spacing:.5px}
+.nav-avatar:hover{background:var(--accentBg2);border-color:var(--accent);box-shadow:0 0 10px rgba(245,166,35,0.2)}
+.btn-logout{background:transparent;border:1px solid var(--border);color:var(--t3);padding:7px 12px;border-radius:9px;font-family:var(--ff);font-weight:600;font-size:12px;cursor:pointer;transition:all .15s;display:inline-flex;align-items:center;gap:5px}
+.btn-logout:hover{border-color:rgba(239,68,68,.4);color:var(--red);background:var(--redBg)}
+.btn-logout svg{width:13px;height:13px}
+.ham{display:none;flex-direction:column;gap:4px;cursor:pointer;padding:6px;background:none;border:none}
+.ham span{width:20px;height:2px;background:var(--t2);border-radius:2px;display:block;transition:all .2s}
+.ham.open span:nth-child(1){transform:translateY(6px) rotate(45deg)}
+.ham.open span:nth-child(2){opacity:0}
+.ham.open span:nth-child(3){transform:translateY(-6px) rotate(-45deg)}
+.mob-nav{display:none;position:fixed;top:var(--nav);left:0;right:0;z-index:190;background:var(--bg1);border-bottom:1px solid var(--border);flex-direction:column;padding:8px 14px 18px}
+.mob-nav.open{display:flex}
+.mob-nav a{font-size:15px;font-weight:500;color:var(--t2);text-decoration:none;padding:13px 8px;border-bottom:1px solid var(--border);transition:color .15s;display:flex;align-items:center;gap:10px}
+.mob-nav a svg{width:16px;height:16px}
+.mob-nav a:last-child{border-bottom:none}
+.mob-nav a.active{color:var(--accent)}
+.mob-nav-btns{display:flex;gap:8px;margin-top:14px}
+.mob-nav-btns button,.mob-nav-btns a{flex:1;padding:11px;border-radius:9px;font-family:var(--ff);font-weight:600;font-size:14px;cursor:pointer;border:none;transition:all .15s;text-align:center;text-decoration:none;display:flex;align-items:center;justify-content:center}
+.mob-btn-ghost{background:var(--bg3);color:var(--t1)}
+.mob-btn-accent{background:var(--accent);color:#000}
+.mob-btn-red{background:var(--redBg);color:var(--red);border:1px solid rgba(239,68,68,.25) !important}
+
+/* Hero */
+.hero{margin-top:var(--nav);position:relative;overflow:hidden;min-height:460px;display:flex;align-items:center}
+.hero-bg{position:absolute;inset:0;z-index:0;background:#0C101A}
+.hero-bg img{width:100%;height:100%;object-fit:cover;object-position:right center;display:block}
+.hero-bg::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,rgba(7,9,15,0.97) 0%,rgba(7,9,15,0.90) 35%,rgba(7,9,15,0.65) 60%,rgba(7,9,15,0.15) 100%),linear-gradient(0deg,rgba(7,9,15,0.80) 0%,transparent 50%)}
+[data-theme="light"] .hero-bg::after{background:linear-gradient(90deg,rgba(238,241,248,0.97) 0%,rgba(238,241,248,0.90) 35%,rgba(238,241,248,0.68) 60%,rgba(238,241,248,0.15) 100%),linear-gradient(0deg,rgba(238,241,248,0.85) 0%,transparent 50%)}
+.hero-inner{width:100%;position:relative;z-index:1;padding:56px 5% 52px 5%;display:flex;align-items:center;justify-content:flex-start}
+.hero-content{max-width:540px;text-align:left;margin-left:0;margin-right:auto}
+.eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:11px;font-weight:600;color:var(--accent);text-transform:uppercase;letter-spacing:2px;margin-bottom:14px;background:var(--accentBg);border:1px solid var(--borderAcc);border-radius:20px;padding:5px 14px}
+.pulse{width:7px;height:7px;background:var(--green);border-radius:50%;flex-shrink:0;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(34,197,94,.5)}60%{box-shadow:0 0 0 6px rgba(34,197,94,0)}}
+.hero-title{font-family:var(--ffC);font-size:clamp(38px,6vw,68px);font-weight:800;line-height:1.02;letter-spacing:.5px;margin-bottom:14px}
+.hero-title em{color:var(--accent);font-style:normal}
+.hero-sub{font-size:14px;color:var(--t2);max-width:460px;margin-bottom:28px;line-height:1.7}
+.hero-btns{display:flex;gap:12px;flex-wrap:wrap}
+.hbtn{display:inline-flex;align-items:center;gap:9px;font-family:var(--ffC);font-weight:700;font-size:17px;letter-spacing:.6px;text-transform:uppercase;border:none;cursor:pointer;border-radius:11px;transition:all .2s;text-decoration:none;padding:14px 28px;flex-shrink:0;line-height:1}
+.hbtn svg{width:19px;height:19px;flex-shrink:0}
+.hbtn-primary{background:var(--accent);color:#000;box-shadow:0 4px 20px rgba(245,166,35,.3)}
+.hbtn-primary:hover{filter:brightness(1.1);transform:translateY(-2px);box-shadow:0 8px 32px rgba(245,166,35,.45)}
+.hbtn-outline{background:rgba(255,255,255,0.08);color:var(--t1);border:2px solid rgba(255,255,255,0.15);backdrop-filter:blur(8px)}
+.hbtn-outline:hover{background:rgba(255,255,255,0.14);border-color:var(--borderAcc);color:var(--accent)}
+.hero-trust{display:flex;gap:10px;margin-top:22px;flex-wrap:wrap}
+.trust-pill{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:600;color:var(--t3);background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:20px;padding:5px 12px}
+.trust-pill svg{width:11px;height:11px;color:var(--green)}
+
+/* Feed */
+.feed-section{background:var(--bg0);border-bottom:1px solid var(--border)}
+.feed-header{max-width:1260px;margin:0 auto;padding:28px 24px 0;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
+.feed-title{font-family:var(--ffC);font-size:22px;font-weight:700;display:flex;align-items:center;gap:10px}
+.feed-title svg{width:18px;height:18px;color:var(--accent)}
+.feed-sub{font-size:13px;color:var(--t3);margin-top:2px}
+.api-bar{display:flex;gap:6px;flex-wrap:wrap;padding:12px 24px;max-width:1260px;margin:0 auto;align-items:center}
+.api-badge{display:inline-flex;align-items:center;gap:5px;font-size:10px;font-weight:600;color:var(--t3);background:var(--bg2);border:1px solid var(--border);border-radius:5px;padding:3px 9px;text-transform:uppercase;letter-spacing:.4px}
+.api-badge.ok svg{color:var(--green)}
+.api-badge.err svg{color:var(--red)}
+.api-badge svg{width:10px;height:10px;flex-shrink:0}
+@keyframes spin{to{transform:rotate(360deg)}}
+.api-badge.loading svg{color:var(--accent);animation:spin .75s linear infinite}
+.last-updated{font-size:10px;color:var(--t3);margin-left:auto;display:flex;align-items:center;gap:4px}
+.last-updated svg{width:10px;height:10px}
+.main-wrap{max-width:1260px;margin:0 auto;display:grid;grid-template-columns:1fr;padding-bottom:80px}
+@media(min-width:1060px){.main-wrap{grid-template-columns:1fr 340px}}
+.feed{padding:16px 20px}
+.sec-lbl{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:1.5px;color:var(--t3);padding:6px 0 10px;border-bottom:1px solid var(--border);margin-bottom:12px;display:flex;align-items:center;justify-content:space-between}
+.sec-lbl span{display:flex;align-items:center;gap:6px}
+.sec-lbl.wc{color:var(--green)}
+.mcard{background:var(--bg2);border:1px solid var(--border);border-radius:var(--rLg);padding:15px 17px;cursor:default;transition:all .18s;margin-bottom:10px;animation:fadeUp .3s ease both;position:relative;overflow:hidden}
+.mcard::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:transparent;transition:background .18s}
+.mcard:hover{background:var(--bg3);border-color:var(--borderHov);transform:translateY(-1px);box-shadow:var(--shadow)}
+.mcard:hover::before{background:linear-gradient(90deg,transparent,var(--accent),transparent)}
+.mcard.live-card::before{background:linear-gradient(90deg,transparent,var(--green),transparent)}
+.mcard.wc-card{border-left:3px solid rgba(34,197,94,.3)}
+.mcard.wc-card:hover::before{background:linear-gradient(90deg,transparent,var(--green),transparent)}
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.ctop{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;gap:6px}
+.league-tag{display:flex;align-items:center;gap:7px;font-size:11px;font-weight:600;color:var(--t3);text-transform:uppercase;letter-spacing:.5px}
+.league-tag.wct{color:var(--green)}
+.ctop-right{display:flex;align-items:center;gap:6px;flex-shrink:0}
+.live-badge{display:inline-flex;align-items:center;gap:5px;background:var(--greenBg);color:var(--green);font-size:10px;font-weight:700;padding:3px 8px;border-radius:4px;text-transform:uppercase;letter-spacing:.5px;border:1px solid rgba(34,197,94,.15)}
+.live-badge .dot{width:5px;height:5px;background:var(--green);border-radius:50%;animation:pulse 1.6s infinite}
+.time-tag{font-size:11px;color:var(--t3);display:flex;align-items:center;gap:5px}
+.time-tag svg{width:12px;height:12px}
+.trow{display:flex;align-items:center;gap:10px;margin-bottom:13px}
+.team-blk{flex:1;display:flex;align-items:center;gap:9px;min-width:0}
+.team-blk.away{flex-direction:row-reverse}
+.tcrest{width:28px;height:28px;object-fit:contain;border-radius:50%;flex-shrink:0}
+.tname{font-size:14px;font-weight:600;color:var(--t1);line-height:1.2;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tname.away{text-align:right}
+.score-box{background:var(--bg0);border:1px solid var(--border);border-radius:8px;padding:6px 14px;font-family:var(--ffC);font-size:20px;font-weight:700;color:var(--t1);text-align:center;min-width:68px;flex-shrink:0}
+.vs-box{font-family:var(--ffC);font-size:13px;font-weight:700;color:var(--t3);text-align:center;min-width:36px;flex-shrink:0}
+.og{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px}
+.obtn{background:var(--bg0);border:1px solid var(--border);border-radius:9px;padding:10px 6px;text-align:center;cursor:pointer;transition:all .15s;font-family:var(--ff);user-select:none}
+.obtn:hover{background:var(--accentBg);border-color:rgba(245,166,35,.25)}
+.obtn .ol{font-size:10px;color:var(--t3);display:block;margin-bottom:3px;font-weight:500;text-transform:uppercase;letter-spacing:.3px}
+.obtn .ov{font-size:15px;font-weight:700;color:var(--t1);display:block;font-family:var(--ffC)}
+.gg{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-top:6px}
+.gbtn{background:var(--blueBg);border:1px solid rgba(96,165,250,.10);border-radius:8px;padding:8px 4px;text-align:center;cursor:pointer;transition:all .15s;font-family:var(--ff);user-select:none}
+.gbtn:hover{background:rgba(96,165,250,.16);border-color:var(--blue)}
+.gbtn .gl{font-size:10px;color:var(--blue);display:block;font-weight:600;text-transform:uppercase}
+.gbtn .gv{font-size:14px;font-weight:700;color:var(--t1);font-family:var(--ffC)}
+.loading-wrap{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:60px 20px;gap:16px}
+.spinner{width:36px;height:36px;border:3px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .75s linear infinite}
+.empty-wrap{padding:60px 20px;text-align:center;color:var(--t3);font-size:13px;display:flex;flex-direction:column;align-items:center;gap:10px}
+.empty-wrap svg{width:32px;height:32px}
+
+/* Sidebar slip */
+.dslip{display:none;flex-direction:column;background:var(--bg2);border:1px solid var(--border);border-radius:var(--rLg);overflow:hidden;margin:16px 20px 16px 0;position:sticky;top:calc(var(--nav) + 20px)}
+@media(min-width:1060px){.dslip{display:flex}}
+.dhead{padding:13px 16px;border-bottom:1px solid var(--border);background:var(--bg3);display:flex;align-items:center;justify-content:space-between}
+.dtitle{font-family:var(--ffC);font-size:16px;font-weight:700;display:flex;align-items:center;gap:8px}
+.dtitle svg{width:16px;height:16px;color:var(--accent)}
+.login-prompt{padding:28px 18px;display:flex;flex-direction:column;align-items:center;gap:14px;text-align:center}
+.login-prompt-icon{width:54px;height:54px;background:var(--accentBg);border:1px solid var(--borderAcc);border-radius:50%;display:flex;align-items:center;justify-content:center}
+.login-prompt-icon svg{width:24px;height:24px;color:var(--accent)}
+.login-prompt h3{font-family:var(--ffC);font-size:17px;font-weight:700;color:var(--t1)}
+.login-prompt p{font-size:12px;color:var(--t2);line-height:1.6;max-width:200px}
+.lp-btn-register{width:100%;padding:12px;border-radius:9px;background:var(--accent);color:#000;font-family:var(--ffC);font-size:15px;font-weight:700;letter-spacing:.5px;cursor:pointer;border:none;text-transform:uppercase;text-decoration:none;display:flex;align-items:center;justify-content:center;gap:7px;transition:all .15s}
+.lp-btn-register:hover{filter:brightness(1.1)}
+.lp-btn-register svg{width:15px;height:15px;color:#000}
+.lp-btn-signin{width:100%;padding:10px;border-radius:9px;background:transparent;color:var(--t1);font-family:var(--ff);font-size:13px;font-weight:600;cursor:pointer;border:1px solid var(--border);text-decoration:none;display:flex;align-items:center;justify-content:center;gap:7px;transition:all .15s}
+.lp-btn-signin:hover{border-color:var(--borderHov);background:var(--bg3)}
+.lp-btn-signin svg{width:14px;height:14px}
+.lp-divider{font-size:11px;color:var(--t3);position:relative;width:100%;text-align:center}
+.lp-divider::before,.lp-divider::after{content:'';position:absolute;top:50%;width:40%;height:1px;background:var(--border)}
+.lp-divider::before{left:0}.lp-divider::after{right:0}
+.lp-features{width:100%;display:flex;flex-direction:column;gap:8px;margin-top:4px}
+.lp-feat{display:flex;align-items:center;gap:8px;font-size:11px;color:var(--t2)}
+.lp-feat svg{width:12px;height:12px;color:var(--green);flex-shrink:0}
+.slip-logged{padding:20px 18px;display:flex;flex-direction:column;align-items:center;gap:12px;text-align:center}
+.slip-logged-icon{width:54px;height:54px;background:var(--greenBg);border:1px solid rgba(34,197,94,.25);border-radius:50%;display:flex;align-items:center;justify-content:center}
+.slip-logged-icon svg{width:24px;height:24px;color:var(--green)}
+
+/* Footer */
+footer{background:var(--bg1);border-top:1px solid var(--border);padding:40px 24px 30px}
+.footer-inner{max-width:1260px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:32px}
+.footer-logo{font-family:var(--ffC);font-size:26px;font-weight:800;color:var(--t1);margin-bottom:10px}
+.footer-logo em{color:var(--accent);font-style:normal}
+.footer-tagline{font-size:13px;color:var(--t3);line-height:1.6;max-width:200px;margin-bottom:16px}
+.footer-badges{display:flex;gap:6px;flex-wrap:wrap}
+.fbadge{background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:5px 10px;font-size:10px;font-weight:600;color:var(--t3);display:flex;align-items:center;gap:5px;text-transform:uppercase;letter-spacing:.5px}
+.fbadge svg{width:11px;height:11px;color:var(--green)}
+.footer-col h4{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--t3);margin-bottom:14px}
+.footer-col ul{list-style:none;display:flex;flex-direction:column;gap:9px}
+.footer-col ul li a{font-size:13px;color:var(--t2);text-decoration:none;transition:color .15s}
+.footer-col ul li a:hover{color:var(--accent)}
+.footer-bottom{max-width:1260px;margin:28px auto 0;padding-top:20px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.footer-copy{font-size:12px;color:var(--t3)}
+.footer-legal{font-size:12px;color:var(--t3);max-width:500px;line-height:1.6}
+.resp-badge{display:inline-flex;align-items:center;gap:5px;background:var(--redBg);border:1px solid rgba(239,68,68,.15);border-radius:5px;padding:4px 9px;font-size:10px;font-weight:700;color:var(--red);text-transform:uppercase;letter-spacing:.5px}
+.resp-badge svg{width:11px;height:11px}
+
+/* ── WINNER POPUP SYSTEM ── */
+.wpop-container{position:fixed;bottom:24px;left:24px;z-index:9999;display:flex;flex-direction:column-reverse;gap:10px;pointer-events:none;max-width:310px}
+.wpop{pointer-events:auto;background:var(--bg2);border:1px solid var(--borderAcc);border-radius:14px;padding:13px 36px 13px 14px;display:flex;align-items:center;gap:12px;box-shadow:0 12px 40px rgba(0,0,0,0.65),0 0 0 1px rgba(245,166,35,0.12);transform:translateX(-360px);opacity:0;transition:transform 0.5s cubic-bezier(.22,.68,0,1.2),opacity 0.35s ease;position:relative;overflow:hidden;min-width:275px}
+.wpop::before{content:'';position:absolute;top:0;left:0;right:0;height:2.5px;background:linear-gradient(90deg,var(--accent) 0%,rgba(245,166,35,0.15) 100%)}
+.wpop.show{transform:translateX(0);opacity:1}
+.wpop.hide{transform:translateX(-360px);opacity:0;transition:transform 0.38s cubic-bezier(.4,0,1,.6),opacity 0.28s ease}
+.wpop-avatar{width:46px;height:46px;border-radius:50%;object-fit:cover;border:2px solid var(--borderAcc);flex-shrink:0;background:var(--bg3);display:block}
+.wpop-body{flex:1;min-width:0}
+.wpop-header{display:flex;align-items:baseline;justify-content:space-between;gap:6px;margin-bottom:2px}
+.wpop-name{font-size:13px;font-weight:600;color:var(--t1);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:110px}
+.wpop-amount{font-family:var(--ffC);font-size:16px;font-weight:800;color:var(--accent);letter-spacing:.4px;white-space:nowrap;flex-shrink:0}
+.wpop-status{font-size:11px;font-weight:600;color:var(--green);display:flex;align-items:center;gap:4px;margin-bottom:4px}
+.wpop-status svg{width:11px;height:11px;flex-shrink:0}
+.wpop-review{font-size:11px;color:var(--t2);line-height:1.5;font-style:italic}
+.wpop-close{position:absolute;top:9px;right:9px;background:none;border:none;cursor:pointer;color:var(--t3);padding:3px;display:flex;align-items:center;border-radius:4px;transition:all .15s;line-height:0}
+.wpop-close:hover{color:var(--t1);background:var(--border)}
+.wpop-close svg{width:13px;height:13px}
+.wpop-bar{position:absolute;bottom:0;left:0;right:0;height:2px;background:var(--border)}
+.wpop-bar-fill{height:100%;background:linear-gradient(90deg,var(--accent),rgba(245,166,35,0.4));transform-origin:left;animation:wbar linear forwards}
+@keyframes wbar{from{transform:scaleX(1)}to{transform:scaleX(0)}}
+@media(max-width:480px){.wpop-container{bottom:14px;left:10px;right:10px;max-width:none}.wpop{min-width:0;width:100%}}
+
+/* ── MOBILE ── */
+@media(max-width:1059px){
+  nav{padding:0 16px}
+  .nav-links{display:none}
+  .logo{display:none}
+  .icon-btn#themeBtn{display:none}
+  .nav-auth{display:flex}
+  .nav-user{display:flex}
+  .nav-right{margin-left:auto;gap:6px}
+  .ham{display:flex;margin-left:8px}
+  .footer-inner{grid-template-columns:1fr 1fr;gap:24px}
+}
+@media(max-width:1059px){
+  .nav-auth{gap:6px}
+  .btn-signin{padding:7px 12px;font-size:12px}
+  .btn-register{padding:7px 12px;font-size:12px}
+  .nav-balance-pill{padding:5px 9px;font-size:12px}
+  .nav-balance-pill svg{display:none}
+  .nav-avatar{width:34px;height:34px;font-size:12px}
+  .btn-logout{display:none}
+}
+@media(max-width:640px){
+  nav{padding:0 12px}
+  .hero-inner{padding:36px 14px 34px}
+  .hero-title{font-size:36px}
+  .feed{padding:12px 14px}
+  .mcard{padding:12px 13px}
+  .tname{font-size:13px}
+  .footer-inner{grid-template-columns:1fr 1fr;gap:20px}
+  .api-bar{padding:6px 14px}
+  .hero-btns{gap:8px}
+  .hbtn{font-size:15px;padding:12px 22px}
+}
+@media(max-width:400px){
+  .og{gap:4px}.gg{gap:4px}.obtn{padding:8px 4px}.gbtn{padding:7px 3px}
+  .score-box{min-width:56px;padding:5px 10px;font-size:18px}.tname{font-size:12px}
+  .hbtn{padding:10px 18px;font-size:13px}
+  .footer-inner{grid-template-columns:1fr}.footer-bottom{flex-direction:column;align-items:flex-start}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="/" class="logo">G<em>S</em>TAKE</a>
+  <div class="nav-links">
+    <a href="/" class="active"><svg data-lucide="home"></svg>Home</a>
+    <a href="betting.html"><svg data-lucide="list"></svg>My Bets</a>
+    <a href="wallet.html"><svg data-lucide="wallet"></svg>Wallet</a>
+    <a href="results.html"><svg data-lucide="bar-chart-2"></svg>Results</a>
+  </div>
+  <div class="nav-right">
+    <div class="nav-auth" id="navGuest">
+      <a href="login.html" class="btn-signin">Sign In</a>
+      <a href="register.html" class="btn-register">Register Free</a>
+    </div>
+    <div class="nav-user" id="navUser" style="display:none">
+      <a href="profile.html" class="nav-avatar" id="navAvatar" title="My Profile">
+        <span id="navInitials"><svg data-lucide="user" style="width:16px;height:16px"></svg></span>
+      </a>
+      <a href="wallet.html" class="nav-balance-pill">
+        <svg data-lucide="wallet"></svg>
+        <span id="navBalance">GHS 0.00</span>
+      </a>
+      <button class="btn-logout" onclick="logout()">
+        <svg data-lucide="log-out"></svg>Sign Out
+      </button>
+    </div>
+    <div class="icon-btn" id="themeBtn" onclick="toggleTheme()"><svg data-lucide="moon" id="themeIco"></svg></div>
+    <button class="ham" id="hamBtn" onclick="toggleMobNav()"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+
+<!-- MOBILE NAV -->
+<div class="mob-nav" id="mobNav">
+  <a href="/" class="active"><svg data-lucide="home"></svg>Home</a>
+  <a href="betting.html"><svg data-lucide="list"></svg>My Bets</a>
+  <a href="wallet.html"><svg data-lucide="wallet"></svg>Wallet</a>
+  <a href="results.html"><svg data-lucide="bar-chart-2"></svg>Results</a>
+  <a href="profile.html" id="mobProfile" style="display:none"><svg data-lucide="user"></svg>My Profile</a>
+  <div class="mob-nav-btns" id="mobAuthBtns">
+    <button class="mob-btn-ghost" onclick="window.location='login.html'">Sign In</button>
+    <button class="mob-btn-accent" onclick="window.location='register.html'">Register Now</button>
+  </div>
+  <div class="mob-nav-btns" id="mobUserBtns" style="display:none">
+    <button class="mob-btn-ghost" onclick="window.location='profile.html'">My Profile</button>
+    <button class="mob-btn-red" onclick="logout()">Sign Out</button>
+  </div>
+</div>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-bg">
+    <img src="https://oddsmatrix.com/wp-content/uploads/2022/10/greatest-sports-betting-stories-768x403.png" alt="" onerror="this.style.display='none'">
+  </div>
+  <div class="hero-inner">
+    <div class="hero-content">
+      <div class="hero-title">Bet Smarter.<br><em>Win Bigger.</em></div>
+      <div class="hero-sub">Real-time odds — Premier League, UCL, La Liga, Bundesliga, Serie A, Ligue 1 &amp; FIFA World Cup 2026.</div>
+      <div class="hero-btns" id="heroGuestBtns">
+        <a href="register.html" class="hbtn hbtn-primary"><svg data-lucide="user-plus"></svg>Join Free — Start Winning</a>
+        <a href="login.html" class="hbtn hbtn-outline"><svg data-lucide="log-in"></svg>Sign In</a>
+      </div>
+      <div class="hero-btns" id="heroUserBtns" style="display:none">
+        <a href="correct-score.html" class="hbtn hbtn-primary"><svg data-lucide="crosshair"></svg>Correct Score</a>
+        <a href="wallet.html" class="hbtn hbtn-outline"><svg data-lucide="wallet"></svg>My Wallet</a>
+      </div>
+      <div class="hero-trust">
+        <span class="trust-pill"><svg data-lucide="shield-check"></svg>Licensed in Ghana</span>
+        <span class="trust-pill"><svg data-lucide="zap"></svg>Instant Withdrawals</span>
+        <span class="trust-pill"><svg data-lucide="lock"></svg>Secure &amp; Encrypted</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FEED HEADER -->
+<div class="feed-section">
+  <div class="feed-header">
+    <div>
+      <div class="feed-title"><svg data-lucide="layout-grid"></svg>Fixtures &amp; Odds</div>
+      <div class="feed-sub">Top 6 European leagues · FIFA World Cup 2026</div>
+    </div>
+  </div>
+  <div class="api-bar" id="apiBar">
+    <span class="api-badge loading"><svg data-lucide="loader"></svg>Loading fixtures…</span>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="main-wrap">
+  <div><div class="feed" id="feed">
+    <div class="loading-wrap">
+      <div class="spinner"></div>
+      <span style="font-size:13px;color:var(--t3)">Fetching fixtures…</span>
+    </div>
+  </div></div>
+  <div><div class="dslip">
+    <div class="dhead"><div class="dtitle"><svg data-lucide="ticket"></svg>Bet Slip</div></div>
+    <div class="login-prompt" id="slipGuest">
+      <div class="login-prompt-icon"><svg data-lucide="lock"></svg></div>
+      <h3>Login to Place Bets</h3>
+      <p>Create a free account or sign in to select odds and place bets.</p>
+      <a href="register.html" class="lp-btn-register"><svg data-lucide="user-plus"></svg>Register Free</a>
+      <div class="lp-divider">or</div>
+      <a href="login.html" class="lp-btn-signin"><svg data-lucide="log-in"></svg>Sign In</a>
+      <div class="lp-features">
+        <div class="lp-feat"><svg data-lucide="check-circle"></svg>Instant deposits via MoMo</div>
+        <div class="lp-feat"><svg data-lucide="check-circle"></svg>Same-day withdrawals</div>
+        <div class="lp-feat"><svg data-lucide="check-circle"></svg>Live betting &amp; cash out</div>
+        <div class="lp-feat"><svg data-lucide="check-circle"></svg>Welcome bonus on signup</div>
+      </div>
+    </div>
+    <div class="slip-logged" id="slipUser" style="display:none">
+      <div class="slip-logged-icon"><svg data-lucide="check-circle"></svg></div>
+      <div style="font-family:var(--ffC);font-size:16px;font-weight:700;color:var(--t1)" id="slipWelcome">Welcome back!</div>
+      <div style="font-size:12px;color:var(--t2);line-height:1.6">Click any odds to add them to your slip.</div>
+      <a href="correct-score.html" style="width:100%;padding:11px;border-radius:9px;background:var(--accent);color:#000;font-family:var(--ffC);font-size:14px;font-weight:700;text-decoration:none;display:flex;align-items:center;justify-content:center;gap:7px;margin-top:4px">
+        <svg data-lucide="crosshair" style="width:14px;height:14px"></svg>Correct Score Market
+      </a>
+      <a href="betting.html" style="width:100%;padding:10px;border-radius:9px;background:transparent;color:var(--t1);font-family:var(--ff);font-size:13px;font-weight:600;text-decoration:none;display:flex;align-items:center;justify-content:center;gap:7px;border:1px solid var(--border);margin-top:2px">
+        <svg data-lucide="list" style="width:13px;height:13px"></svg>View My Bets
+      </a>
+    </div>
+  </div></div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div>
+      <div class="footer-logo">G<em>S</em>TAKE</div>
+      <div class="footer-tagline">Ghana's premier sports betting platform. Real-time odds, instant payouts.</div>
+      <div class="footer-badges">
+        <span class="fbadge"><svg data-lucide="shield-check"></svg>Licensed</span>
+        <span class="fbadge"><svg data-lucide="lock"></svg>Secure</span>
+        <span class="fbadge"><svg data-lucide="zap"></svg>Live</span>
+      </div>
+    </div>
+    <div class="footer-col"><h4>Sports</h4><ul><li><a href="football.html">Football</a></li><li><a href="basketball.html">Basketball</a></li><li><a href="tennis.html">Tennis</a></li><li><a href="live-betting.html">Live Betting</a></li></ul></div>
+    <div class="footer-col"><h4>Account</h4><ul><li><a href="register.html">Register</a></li><li><a href="login.html">Login</a></li><li><a href="deposit.html">Deposit</a></li><li><a href="withdraw.html">Withdraw</a></li></ul></div>
+    <div class="footer-col"><h4>Help</h4><ul><li><a href="how-to-bet.html">How to Bet</a></li><li><a href="responsible-gambling.html">Responsible Gambling</a></li><li><a href="terms.html">Terms &amp; Conditions</a></li><li><a href="contact.html">Contact Us</a></li></ul></div>
+  </div>
+  <div class="footer-bottom">
+    <div class="footer-copy">&copy; 2026 GStake Ghana. All rights reserved.</div>
+    <div class="footer-legal"><span class="resp-badge"><svg data-lucide="alert-triangle"></svg>18+</span>&nbsp;Gambling can be addictive. Please play responsibly. GStake is licensed by the Gaming Commission of Ghana.</div>
+  </div>
+</footer>
+
+<!-- WINNER POPUP CONTAINER -->
+<div class="wpop-container" id="wpopContainer"></div>
+
+<script>
+/* ══════════════════════════════════════════
+   CORE APP
+══════════════════════════════════════════ */
+const BASE_URL     = 'http://localhost:8080';
+const FIXTURES_URL = `${BASE_URL}/api/v1/football/fixtures`;
+
+function getToken() { return localStorage.getItem('gstake_token') || sessionStorage.getItem('gstake_token') || null; }
+function getUser()  { try { const r=localStorage.getItem('gstake_user')||sessionStorage.getItem('gstake_user'); return r?JSON.parse(r):null; } catch{return null;} }
+function logout()   { ['gstake_token','gstake_user'].forEach(k=>{localStorage.removeItem(k);sessionStorage.removeItem(k);}); window.location.href='/'; }
+
+window.addEventListener('load', () => {
+  lucide.createIcons();
+  applyAuthState();
+  loadMatches();
+  startWinnerPopups();
+});
+
+function applyAuthState() {
+  const token=getToken(), user=getUser();
+  if (token && user) {
+    document.getElementById('navGuest').style.display='none';
+    document.getElementById('navUser').style.display='flex';
+    document.getElementById('slipGuest').style.display='none';
+    document.getElementById('slipUser').style.display='flex';
+    document.getElementById('heroGuestBtns').style.display='none';
+    document.getElementById('heroUserBtns').style.display='flex';
+    document.getElementById('mobAuthBtns').style.display='none';
+    document.getElementById('mobUserBtns').style.display='flex';
+    document.getElementById('mobProfile').style.display='flex';
+    const first=(user.firstName||'').trim(), last=(user.lastName||'').trim();
+    const ini=(first[0]||'')+(last[0]||first[1]||'');
+    if(ini) document.getElementById('navInitials').textContent=ini.toUpperCase();
+    document.getElementById('slipWelcome').textContent=`Welcome back, ${user.firstName||'Champ'}!`;
+    fetchBalance();
+  } else {
+    document.getElementById('navGuest').style.display='flex';
+    document.getElementById('navUser').style.display='none';
+    document.getElementById('slipGuest').style.display='flex';
+    document.getElementById('slipUser').style.display='none';
+    document.getElementById('heroGuestBtns').style.display='flex';
+    document.getElementById('heroUserBtns').style.display='none';
+  }
+  lucide.createIcons();
+}
+
+async function fetchBalance() {
+  try {
+    const res=await fetch(`${BASE_URL}/api/v1/wallet/balance`,{headers:{Authorization:`Bearer ${getToken()}`}});
+    const d=await res.json();
+    const bal=d.data?.balance??d.balance??null;
+    if(bal!==null) document.getElementById('navBalance').textContent=`GHS ${parseFloat(bal).toFixed(2)}`;
+  } catch{}
+}
+
+let allMatches=[];
+function sr(n){let s=n;s^=s<<13;s^=s>>17;s^=s<<5;return(s>>>0)/4294967296;}
+function odds(id){return{home:+(1.35+sr(id)*2.5).toFixed(2),draw:+(2.60+sr(id*7919)*1.5).toFixed(2),away:+(1.35+sr(id*6271)*2.5).toFixed(2),o15:+(1.12+sr(id+1)*0.4).toFixed(2),o25:+(1.55+sr(id+2)*0.7).toFixed(2),o35:+(2.10+sr(id+3)*1.4).toFixed(2)};}
+function hashStr(s){let h=0;for(let i=0;i<s.length;i++)h=(Math.imul(31,h)+s.charCodeAt(i))|0;return Math.abs(h);}
+
+async function loadMatches(){
+  showLoad();
+  try{
+    const res=await fetch(FIXTURES_URL);
+    if(!res.ok) throw new Error(`HTTP ${res.status}`);
+    const data=await res.json();
+    const club=[],wc=[];
+    (data.matches||[]).forEach(m=>{if(isWC(m))wc.push(normalise(m));else club.push(normalise(m));});
+    allMatches=[...club,...wc];
+    updateApiBadge(club.length,wc.length);
+    renderFeed();
+  }catch(e){
+    console.error('Failed to load fixtures:',e);
+    updateApiBadgeError();
+    showError();
+  }
+}
+
+function isWC(m){const c=(m.competition||'').toLowerCase();return c.includes('world cup')||c.includes('wc')||m.category==='wc';}
+function normalise(m){return{_uid:m.uid||`m-${Math.random()}`,_comp:m.competition||'Football',_cat:isWC(m)?'wc':'club',_isLive:m.live===true||m.status==='IN_PLAY'||m.status==='PAUSED',_date:m.utcDate||new Date().toISOString(),_min:m.minute||'',_ht:m.teams?.home?.name||m.homeTeam||'Home',_at:m.teams?.away?.name||m.awayTeam||'Away',_hc:m.crests?.home||m.teams?.home?.crest||'',_ac:m.crests?.away||m.teams?.away?.crest||'',_hs:m.scores?.home??null,_as:m.scores?.away??null,_venue:m.venue||'',_odds:m.odds||null};}
+
+function updateApiBadge(c,w){
+  const now=new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
+  document.getElementById('apiBar').innerHTML=`
+    <span class="api-badge ${c>0?'ok':'err'}"><svg data-lucide="${c>0?'check-circle':'x-circle'}"></svg>${c>0?`✓ ${c} Club Fixtures`:'Club Leagues Offline'}</span>
+    <span class="api-badge ${w>0?'ok':'err'}"><svg data-lucide="${w>0?'check-circle':'x-circle'}"></svg>${w>0?`✓ ${w} WC 2026 Fixtures`:'WC 2026 Offline'}</span>
+    <span class="last-updated"><svg data-lucide="refresh-cw"></svg>Updated ${now}</span>`;
+  lucide.createIcons();
+}
+function updateApiBadgeError(){document.getElementById('apiBar').innerHTML=`<span class="api-badge err"><svg data-lucide="x-circle"></svg>Backend Unreachable</span>`;lucide.createIcons();}
+function showLoad(){document.getElementById('feed').innerHTML='<div class="loading-wrap"><div class="spinner"></div><span style="font-size:13px;color:var(--t3)">Fetching fixtures…</span></div>';}
+function showError(){document.getElementById('feed').innerHTML=`<div class="empty-wrap"><svg data-lucide="wifi-off"></svg><span>Could not reach the server.</span><button onclick="loadMatches()" style="margin-top:8px;padding:8px 20px;border-radius:8px;background:var(--accent);color:#000;border:none;font-weight:700;cursor:pointer;font-family:var(--ff)">Retry</button></div>`;lucide.createIcons();}
+
+function renderFeed(){
+  const feed=document.getElementById('feed');
+  const club=allMatches.filter(m=>m._cat==='club');
+  const wc=allMatches.filter(m=>m._cat==='wc');
+  const sortFn=(a,b)=>{if(a._isLive&&!b._isLive)return -1;if(!a._isLive&&b._isLive)return 1;return new Date(a._date)-new Date(b._date);};
+  club.sort(sortFn);wc.sort(sortFn);
+  let html='';
+  if(club.length) html+=mkSection('Top 6 European Leagues','shield','var(--accent)','',club,0);
+  if(wc.length)   html+=mkSection('FIFA World Cup 2026','trophy','var(--green)','wc',wc,club.length);
+  feed.innerHTML=html||'<div class="empty-wrap"><svg data-lucide="calendar-x"></svg><span>No fixtures available right now.</span></div>';
+  lucide.createIcons();
+}
+
+function mkSection(title,icon,color,type,arr,off){
+  const cls=type==='wc'?'sec-lbl wc':'sec-lbl';
+  let h=`<div class="${cls}" style="margin-top:${off>0?'24px':'0'}"><span><svg data-lucide="${icon}" style="width:12px;height:12px;color:${color}"></svg>${title}</span><span style="font-family:var(--ffC);color:${color}">${arr.length}</span></div>`;
+  arr.forEach((m,i)=>{h+=buildCard(m,off+i);});
+  return h;
+}
+
+function fmtT(u){const d=new Date(u),n=new Date();const t=d.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});const tm=new Date();tm.setDate(n.getDate()+1);if(d.toDateString()===n.toDateString())return'Today '+t;if(d.toDateString()===tm.toDateString())return'Tomorrow '+t;return d.toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short'})+' '+t;}
+
+function buildCard(m,idx){
+  const oid=hashStr(m._uid)%900000+100000;
+  const od=m._odds?{home:m._odds.home,draw:m._odds.draw,away:m._odds.away,o15:m._odds.over15,o25:m._odds.over25,o35:m._odds.over35}:odds(oid);
+  const crest=src=>src?`<img src="${src}" class="tcrest" onerror="this.style.display='none'" alt="">`:'' ;
+  const scoreHtml=m._hs!=null?`<div class="score-box">${m._hs} – ${m._as}</div>`:m._isLive?`<div class="score-box">– –</div>`:`<div class="vs-box">VS</div>`;
+  const statusHtml=m._isLive?`<span class="live-badge"><div class="dot"></div>${m._min||'LIVE'}</span>`:`<span class="time-tag"><svg data-lucide="clock" style="width:12px;height:12px"></svg>${fmtT(m._date)}</span>`;
+  const leagueCls=m._cat==='wc'?'league-tag wct':'league-tag';
+  const cardCls=`mcard${m._isLive?' live-card':''}${m._cat==='wc'?' wc-card':''}`;
+  return `<div class="${cardCls}" style="animation-delay:${idx*25}ms">
+<div class="ctop"><div class="${leagueCls}">${m._comp||'Football'}</div><div class="ctop-right">${statusHtml}</div></div>
+${m._venue?`<div style="font-size:11px;color:var(--t3);margin-bottom:8px;display:flex;align-items:center;gap:4px"><svg data-lucide="map-pin" style="width:11px;height:11px"></svg>${m._venue}</div>`:''}
+<div class="trow">
+  <div class="team-blk">${crest(m._hc)}<div class="tname">${m._ht}</div></div>
+  ${scoreHtml}
+  <div class="team-blk away"><div class="tname away">${m._at}</div>${crest(m._ac)}</div>
+</div>
+<div class="og">
+  <div class="obtn"><span class="ol">1 Home</span><span class="ov">${od.home}</span></div>
+  <div class="obtn"><span class="ol">X Draw</span><span class="ov">${od.draw}</span></div>
+  <div class="obtn"><span class="ol">2 Away</span><span class="ov">${od.away}</span></div>
+</div>
+<div class="gg">
+  <div class="gbtn"><span class="gl">Over 1.5</span><span class="gv">${od.o15}</span></div>
+  <div class="gbtn"><span class="gl">Over 2.5</span><span class="gv">${od.o25}</span></div>
+  <div class="gbtn"><span class="gl">Over 3.5</span><span class="gv">${od.o35}</span></div>
+</div>
+</div>`;
+}
+
+function toggleTheme(){const dark=document.documentElement.getAttribute('data-theme')==='dark';document.documentElement.setAttribute('data-theme',dark?'light':'dark');const i=document.getElementById('themeIco');if(i)i.setAttribute('data-lucide',dark?'sun':'moon');lucide.createIcons();}
+function toggleMobNav(){document.getElementById('mobNav').classList.toggle('open');document.getElementById('hamBtn').classList.toggle('open');}
+setInterval(loadMatches,60*60*1000);
+
+
+/* ══════════════════════════════════════════
+   WINNER POPUP SYSTEM
+══════════════════════════════════════════ */
+const WINNER_DATA = [
+  // Ghana winners
+  {name:'Kwame Asante',      country:'GH', amt:'GH₵ 48,200',  review:"Couldn't believe it — placed a 5-fold and it landed!"},
+  {name:'Ama Serwah',        country:'GH', amt:'GH₵ 92,400',  review:"GStake paid out within minutes. Absolutely mad winnings!"},
+  {name:'Yaw Frimpong',      country:'GH', amt:'GH₵ 130,500', review:"First big win after 3 months. The odds were perfect."},
+  {name:'Akosua Darko',      country:'GH', amt:'GH₵ 55,000',  review:"Trusted my gut on Real Madrid. Never looking back!"},
+  {name:'Kofi Entsie',       country:'GH', amt:'GH₵ 410,000', review:"This platform is different — instant cashout every time."},
+  {name:'Efua Koomson',      country:'GH', amt:'GH₵ 200,000', review:"Weekend accumulator came through. Amazing feeling!"},
+  {name:'Mensah Poku',       country:'GH', amt:'GH₵ 88,000',  review:"The live odds are so sharp. Won big on Champions League."},
+  {name:'Adwoa Tabi',        country:'GH', amt:'GH₵ 320,000', review:"Best betting site in Ghana. No questions asked payout!"},
+  {name:'Nana Boateng',      country:'GH', amt:'GH₵ 74,500',  review:"My mate recommended GStake. So glad he did — cashed out!"},
+  {name:'Kwabena Acheampong',country:'GH', amt:'GH₵ 230,000', review:"4 games, all wins. GStake never disappoints!"},
+  {name:'Maame Agyei',       country:'GH', amt:'GH₵ 115,000', review:"Picked all 3 correct scores. Life-changing money!"},
+  {name:'Serwa Amoah',       country:'GH', amt:'GH₵ 260,000', review:"Fast payout, no stress. This is the real deal."},
+  {name:'Kojo Nyarko',       country:'GH', amt:'GH₵ 500,000', review:"Half a million cedis — I screamed! GStake for life."},
+  // Nigeria winners
+  {name:'Emeka Okonkwo',  country:'NG', amt:'₦ 312,500',   review:"Bundesliga double came in. Credited same day!"},
+  {name:'Chidi Nwosu',    country:'NG', amt:'₦ 580,000',   review:"Been using GStake for 6 months. Best platform, no doubt."},
+  {name:'Tunde Balogun',  country:'NG', amt:'₦ 920,000',   review:"Over 2.5 in 4 games, all hit! Unbelievable night."},
+  {name:'Dele Adeleke',   country:'NG', amt:'₦ 1,200,000', review:"Premier League weekend sorted my month. Thank you GStake!"},
+  {name:'Segun Peters',   country:'NG', amt:'₦ 750,000',   review:"La Liga treble. 45-minute payout. These guys are legit."},
+  {name:'Biodun Lawal',   country:'NG', amt:'₦ 2,100,000', review:"I've won before but never like this. GStake is top tier!"},
+  {name:'Akin Rasheed',   country:'NG', amt:'₦ 3,500,000', review:"Correct score on 3 matches. Absolute madness. I'm rich!"},
+  {name:'Uche Dike',      country:'NG', amt:'₦ 445,000',   review:"Naija betting just levelled up with GStake. Payout instant!"},
+  {name:'Femi Adeyemi',   country:'NG', amt:'₦ 660,000',   review:"Trusted my analysis. GStake delivered without drama."},
+  {name:'Jide Ogunleye',  country:'NG', amt:'₦ 1,800,000', review:"Saturday accumulator was perfect. Never felt this good!"},
+  {name:'Rotimi Saka',    country:'NG', amt:'₦ 980,000',   review:"Six-leg bet, all won. I still can't believe it happened!"},
+  {name:'Babatunde Kalu', country:'NG', amt:'₦ 4,200,000', review:"This is the biggest I've ever won anywhere. GStake is it!"},
+  {name:'Lanre Taiwo',    country:'NG', amt:'₦ 720,000',   review:"Champions League final leg came through. Paid immediately."},
+  {name:'Nkechi Ibe',     country:'NG', amt:'₦ 1,100,000', review:"Took a risk on a double chance. Paid off massively!"},
+  {name:'Olumide Femi',   country:'NG', amt:'₦ 3,000,000', review:"Sunday games went my way. GStake is the most reliable!"},
+  {name:'Chukwuma Jaja',  country:'NG', amt:'₦ 2,700,000', review:"My biggest win yet. Platform is clean and payouts are fast."},
+  // USD winners
+  {name:'James Korvah',   country:'US', amt:'$ 8,750',  review:"UCL bet came in big. Very impressed with GStake!"},
+  {name:'Michael Torres', country:'US', amt:'$ 14,300', review:"Great odds, instant withdrawal. Will bet here forever."},
+  {name:'Sarah Williams', country:'US', amt:'$ 22,000', review:"I doubled down on Serie A and it paid beautifully."},
+  {name:'Brian O\'Connor',country:'US', amt:'$ 5,600',  review:"Recommended by a friend. Now I'm a believer!"},
+  {name:'Chris Murphy',   country:'US', amt:'$ 31,400', review:"Accumulator with 6 legs all landed. Unreal weekend!"},
+  {name:'Tyler Hughes',   country:'US', amt:'$ 9,900',  review:"Loved the live betting feature. Won back-to-back!"},
+  {name:'Marcus Davis',   country:'US', amt:'$ 42,000', review:"This was my biggest sports bet ever. GStake delivered!"},
+  {name:'Rachel Newton',  country:'US', amt:'$ 11,200', review:"The app is smooth and the payouts are lightning fast."},
+  {name:'David Patel',    country:'US', amt:'$ 28,500', review:"Correct score market is where it's at on GStake. Love it!"},
+  {name:'Alex Warner',    country:'US', amt:'$ 6,300',  review:"Started small, built up, and now I'm cashing out big!"},
+  {name:'Jerome Bell',    country:'US', amt:'$ 19,700', review:"Bundesliga weekend was profitable. GStake ftw!"},
+  {name:'Nathan Cole',    country:'US', amt:'$ 35,000', review:"My bankroll grew 10x last month. GStake is fire!"},
+  {name:'Lisa Kim',       country:'US', amt:'$ 52,000', review:"Biggest payout I've ever received from any platform."},
+];
+
+/* Random avatar pools — faces from randomuser.me */
+const AVATAR_SEEDS_MALE   = [10,20,30,40,50,60,70,80,11,21,31,41,51,61,71,81,12,22,32,42];
+const AVATAR_SEEDS_FEMALE = [1,2,3,4,5,6,7,8,9,13,14,15,16,17,18,19,23,24,25,26];
+
+const REVIEWS_EXTRA = [
+  "Withdrew in under 10 minutes. Absolutely elite service!",
+  "GStake's odds beat every other site I've tried.",
+  "Told all my friends — this is the best betting platform around.",
+  "My Saturday morning bet made me smile all week.",
+  "Clean interface, sharp odds, instant payout. Perfect combo!",
+  "Never thought I'd win this much from an accumulator. GStake!",
+  "Correct score on 2 games. Payout was there before I blinked.",
+  "Support team is helpful too. Genuinely love this platform.",
+];
+
+let wpopQueue = [];
+let wpopActive = false;
+let wpopShuffled = [];
+let wpopIdx = 0;
+
+function shuffleArr(arr) {
+  const a=[...arr];
+  for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}
+  return a;
+}
+
+function getAvatarUrl(name, idx) {
+  /* Use randomuser.me with a seed derived from name for consistency */
+  const gender = ['Ama','Akosua','Efua','Adwoa','Maame','Serwa','Sarah','Rachel','Lisa','Nkechi'].some(f=>name.startsWith(f)) ? 'women' : 'men';
+  const pool   = gender === 'women' ? AVATAR_SEEDS_FEMALE : AVATAR_SEEDS_MALE;
+  const seed   = pool[Math.abs(idx) % pool.length];
+  return `https://randomuser.me/api/portraits/${gender}/${seed}.jpg`;
+}
+
+function startWinnerPopups() {
+  wpopShuffled = shuffleArr(WINNER_DATA);
+  wpopIdx = 0;
+  /* First popup: 4-9 seconds after load */
+  const firstDelay = 4000 + Math.random() * 5000;
+  setTimeout(showNextWinnerPop, firstDelay);
+}
+
+function showNextWinnerPop() {
+  if (wpopIdx >= wpopShuffled.length) {
+    wpopShuffled = shuffleArr(WINNER_DATA);
+    wpopIdx = 0;
+  }
+  const winner = wpopShuffled[wpopIdx++];
+  createWinnerPop(winner, wpopIdx);
+
+  /* Next popup: 8–18 seconds later */
+  const nextDelay = 8000 + Math.random() * 10000;
+  setTimeout(showNextWinnerPop, nextDelay);
+}
+
+function createWinnerPop(winner, idx) {
+  const DURATION = 6; /* seconds visible */
+  const avatarUrl = getAvatarUrl(winner.name, idx);
+
+  /* Pick a review — use winner's own or a random extra */
+  const review = winner.review || REVIEWS_EXTRA[Math.floor(Math.random() * REVIEWS_EXTRA.length)];
+
+  const pop = document.createElement('div');
+  pop.className = 'wpop';
+
+  pop.innerHTML = `
+    <img class="wpop-avatar" src="${avatarUrl}"
+         onerror="this.src='https://randomuser.me/api/portraits/men/${(idx%80)+1}.jpg'"
+         alt="${winner.name}">
+    <div class="wpop-body">
+      <div class="wpop-header">
+        <span class="wpop-name">${winner.name}</span>
+        <span class="wpop-amount">${winner.amt}</span>
+      </div>
+      <div class="wpop-status">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+        Successful Cashout
+      </div>
+      <div class="wpop-review">"${review}"</div>
+    </div>
+    <button class="wpop-close" onclick="dismissPop(this.closest('.wpop'))">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+    <div class="wpop-bar"><div class="wpop-bar-fill" style="animation-duration:${DURATION}s"></div></div>`;
+
+  const container = document.getElementById('wpopContainer');
+  container.appendChild(pop);
+
+  /* Enforce max 2 visible at once */
+  const all = container.querySelectorAll('.wpop');
+  if (all.length > 2) {
+    dismissPop(all[0]);
+  }
+
+  /* Trigger show animation next frame */
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => { pop.classList.add('show'); });
+  });
+
+  /* Auto-dismiss after DURATION */
+  const timer = setTimeout(() => dismissPop(pop), DURATION * 1000);
+  pop._timer = timer;
+}
+
+function dismissPop(pop) {
+  if (!pop || pop.classList.contains('hide')) return;
+  clearTimeout(pop._timer);
+  pop.classList.remove('show');
+  pop.classList.add('hide');
+  setTimeout(() => { if (pop.parentNode) pop.parentNode.removeChild(pop); }, 420);
+}
+</script>
+</body>
+</html>

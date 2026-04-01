@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>GStake — Results</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=Barlow+Condensed:wght@600;700;800&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+<style>
+:root {
+  --bg0:#07090F;--bg1:#0C101A;--bg2:#131825;--bg3:#1B2235;
+  --accent:#F5A623;--accentBg:rgba(245,166,35,0.10);
+  --green:#22C55E;--greenBg:rgba(34,197,94,0.12);
+  --red:#EF4444;--redBg:rgba(239,68,68,0.10);
+  --t1:#EEF2FF;--t2:#8892A8;--t3:#4A5568;
+  --border:rgba(255,255,255,0.055);--borderHov:rgba(255,255,255,0.11);--borderAcc:rgba(245,166,35,0.4);
+  --shadow:0 8px 40px rgba(0,0,0,0.6);
+  --ff:'DM Sans',sans-serif;--ffC:'Barlow Condensed',sans-serif;
+  --nav:60px;
+}
+[data-theme="light"]{
+  --bg0:#EEF1F8;--bg1:#F7F9FF;--bg2:#FFFFFF;--bg3:#FFFFFF;
+  --accent:#C8820A;--accentBg:rgba(200,130,10,0.08);
+  --green:#16A34A;--greenBg:rgba(22,163,74,0.09);
+  --red:#DC2626;--redBg:rgba(220,38,38,0.09);
+  --t1:#0F172A;--t2:#475569;--t3:#94A3B8;
+  --border:rgba(0,0,0,0.065);--borderHov:rgba(0,0,0,0.13);--borderAcc:rgba(200,130,10,0.45);
+  --shadow:0 8px 40px rgba(0,0,0,0.10);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;-webkit-tap-highlight-color:transparent}
+body{font-family:var(--ff);background:var(--bg0);color:var(--t1);min-height:100vh;overflow-x:hidden;line-height:1.5;transition:background .25s,color .25s}
+body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear-gradient(rgba(245,166,35,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(245,166,35,0.03) 1px,transparent 1px);background-size:40px 40px;pointer-events:none}
+[data-theme="light"] body::before{background-image:linear-gradient(rgba(0,0,0,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(0,0,0,0.03) 1px,transparent 1px)}
+.blob{position:fixed;border-radius:50%;filter:blur(80px);pointer-events:none;z-index:0}
+.blob-1{width:500px;height:500px;top:-120px;left:-100px;background:rgba(245,166,35,0.07)}
+.blob-2{width:400px;height:400px;bottom:-80px;right:-80px;background:rgba(96,165,250,0.05)}
+
+nav{position:fixed;top:0;left:0;right:0;z-index:200;height:var(--nav);background:rgba(7,9,15,0.95);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 24px;gap:16px}
+[data-theme="light"] nav{background:rgba(247,249,255,0.96)}
+.logo{font-family:var(--ffC);font-size:26px;font-weight:800;letter-spacing:1px;color:var(--t1);text-decoration:none;flex:1}
+.logo em{color:var(--accent);font-style:normal}
+.nav-links{display:flex;align-items:center;gap:4px}
+.nav-link{font-size:13px;font-weight:500;color:var(--t2);text-decoration:none;padding:7px 13px;border-radius:9px;border:1px solid transparent;transition:all .15s}
+.nav-link:hover{border-color:var(--border);color:var(--t1);background:var(--bg3)}
+.nav-link.active{color:var(--accent);border-color:var(--borderAcc);background:var(--accentBg)}
+.nav-right{display:flex;align-items:center;gap:8px}
+.icon-btn{background:transparent;border:1px solid var(--border);width:38px;height:38px;border-radius:9px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .15s}
+.icon-btn:hover{border-color:var(--borderHov);background:var(--bg3)}
+.icon-btn svg{width:16px;height:16px;color:var(--t2)}
+
+.page{position:relative;z-index:1;padding-top:var(--nav)}
+.container{max-width:1100px;margin:0 auto;padding:0 20px}
+
+.page-header{padding:32px 0 24px;border-bottom:1px solid var(--border);margin-bottom:28px}
+.page-header-inner{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.page-title{font-family:var(--ffC);font-size:28px;font-weight:800;letter-spacing:.5px;display:flex;align-items:center;gap:10px}
+.page-title svg{width:22px;height:22px;color:var(--accent)}
+.live-badge{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:600;color:var(--green);background:var(--greenBg);border:1px solid rgba(34,197,94,0.25);border-radius:20px;padding:4px 10px;letter-spacing:.3px}
+.live-dot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse 1.4s infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.8)}}
+.refresh-info{font-size:12px;color:var(--t3);display:flex;align-items:center;gap:5px}
+.refresh-info svg{width:13px;height:13px}
+
+.winners-section{margin-bottom:28px}
+.section-label{font-size:11px;font-weight:700;color:var(--t2);letter-spacing:.8px;text-transform:uppercase;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.section-label::after{content:'';flex:1;height:1px;background:var(--border)}
+.carousel-outer{background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:14px 16px;overflow:hidden;position:relative}
+.carousel-outer::before,.carousel-outer::after{content:'';position:absolute;top:0;bottom:0;width:48px;z-index:2;pointer-events:none}
+.carousel-outer::before{left:0;background:linear-gradient(90deg,var(--bg2),transparent)}
+.carousel-outer::after{right:0;background:linear-gradient(270deg,var(--bg2),transparent)}
+[data-theme="light"] .carousel-outer::before{background:linear-gradient(90deg,#fff,transparent)}
+[data-theme="light"] .carousel-outer::after{background:linear-gradient(270deg,#fff,transparent)}
+.carousel-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.carousel-title{font-size:12px;font-weight:600;color:var(--t2);display:flex;align-items:center;gap:6px}
+.carousel-title svg{width:13px;height:13px;color:var(--accent)}
+.carousel-count{font-size:11px;color:var(--t3)}
+.carousel-track-wrap{overflow:hidden}
+.carousel-track{display:flex;gap:10px;transition:transform 0.7s cubic-bezier(.4,0,.2,1)}
+.winner-chip{flex:0 0 auto;background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:8px 12px;display:flex;align-items:center;gap:10px;min-width:190px;transition:border-color .15s}
+.winner-chip:hover{border-color:var(--borderHov)}
+.winner-avatar{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;border:1px solid var(--border)}
+.winner-info{flex:1;min-width:0}
+.winner-name{font-size:12px;font-weight:600;color:var(--t1);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.winner-amount{font-size:12px;font-weight:700;color:var(--accent);font-family:var(--ffC);letter-spacing:.3px}
+
+.filter-bar{display:flex;align-items:center;gap:8px;margin-bottom:24px;flex-wrap:wrap}
+.filter-btn{font-size:12px;font-weight:600;color:var(--t2);background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:7px 14px;cursor:pointer;transition:all .15s;font-family:var(--ff)}
+.filter-btn:hover{border-color:var(--borderHov);color:var(--t1)}
+.filter-btn.active{background:var(--accentBg);border-color:var(--borderAcc);color:var(--accent)}
+.filter-spacer{flex:1}
+.search-wrap{position:relative;display:flex;align-items:center}
+.search-wrap svg{position:absolute;left:10px;width:14px;height:14px;color:var(--t3);pointer-events:none}
+.search-input{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:7px 12px 7px 32px;font-size:12px;color:var(--t1);font-family:var(--ff);outline:none;transition:border-color .2s;width:180px}
+.search-input::placeholder{color:var(--t3)}
+.search-input:focus{border-color:var(--borderAcc)}
+
+.games-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px;margin-bottom:40px}
+.game-card{background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:16px 18px;transition:border-color .2s,transform .15s;cursor:default;animation:fadeUp .4s ease both}
+.game-card:hover{border-color:var(--borderHov);transform:translateY(-2px)}
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+.card-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.league-info{display:flex;align-items:center;gap:7px}
+.league-logo{width:18px;height:18px;border-radius:3px;object-fit:contain;flex-shrink:0}
+.league-name{font-size:11px;color:var(--t3);font-weight:500}
+.status-pill{font-size:10px;font-weight:700;letter-spacing:.4px;padding:3px 9px;border-radius:20px;text-transform:uppercase}
+.status-ft{background:rgba(34,197,94,0.12);color:#22C55E;border:1px solid rgba(34,197,94,0.25)}
+.status-live{background:rgba(239,68,68,0.12);color:#EF4444;border:1px solid rgba(239,68,68,0.25);animation:livePulse 2s infinite}
+@keyframes livePulse{0%,100%{opacity:1}50%{opacity:.6}}
+.status-sched{background:var(--accentBg);color:var(--accent);border:1px solid var(--borderAcc)}
+.card-teams{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.team-side{display:flex;flex-direction:column;align-items:center;gap:7px;flex:1;min-width:0}
+.team-logo-wrap{width:44px;height:44px;border-radius:50%;background:var(--bg3);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;overflow:hidden}
+.team-logo-wrap img{width:30px;height:30px;object-fit:contain}
+.team-name{font-size:12px;font-weight:600;color:var(--t1);text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:90px}
+.score-center{display:flex;flex-direction:column;align-items:center;gap:2px;flex-shrink:0;padding:0 8px}
+.score-nums{display:flex;align-items:center;gap:6px}
+.score-num{font-family:var(--ffC);font-size:32px;font-weight:800;color:var(--t1);line-height:1;min-width:22px;text-align:center}
+.score-sep{font-family:var(--ffC);font-size:22px;color:var(--t3);font-weight:600;line-height:1}
+.match-time{font-size:10px;color:var(--t3);letter-spacing:.3px}
+.card-footer{display:flex;align-items:center;justify-content:space-between;margin-top:14px;padding-top:12px;border-top:1px solid var(--border)}
+.card-date{font-size:11px;color:var(--t3);display:flex;align-items:center;gap:5px}
+.card-date svg{width:12px;height:12px}
+.card-code{font-size:10px;color:var(--t3);font-family:monospace;background:var(--bg3);padding:2px 7px;border-radius:5px;border:1px solid var(--border)}
+.bet-btn{font-size:11px;font-weight:700;color:var(--accent);background:var(--accentBg);border:1px solid var(--borderAcc);border-radius:7px;padding:4px 11px;text-decoration:none;transition:all .15s;white-space:nowrap;letter-spacing:.2px}
+.bet-btn:hover{background:var(--accent);color:#000}
+
+.state-box{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:60px 20px;text-align:center;gap:12px;grid-column:1/-1}
+.state-box svg{width:36px;height:36px;color:var(--t3)}
+.state-title{font-size:15px;font-weight:600;color:var(--t2)}
+.state-sub{font-size:13px;color:var(--t3)}
+
+.toast{position:fixed;bottom:24px;right:24px;z-index:999;background:var(--bg3);border:1px solid var(--border);border-radius:12px;padding:12px 16px;display:flex;align-items:center;gap:10px;font-size:13px;color:var(--t1);box-shadow:var(--shadow);transform:translateY(80px);opacity:0;transition:all .3s cubic-bezier(.22,.68,0,1.2);max-width:280px}
+.toast.show{transform:translateY(0);opacity:1}
+.toast svg{width:16px;height:16px;flex-shrink:0}
+.toast.err svg{color:var(--red)}
+.toast.ok svg{color:var(--green)}
+
+.hamburger{display:none;background:transparent;border:1px solid var(--border);width:38px;height:38px;border-radius:9px;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0}
+.hamburger svg{width:18px;height:18px;color:var(--t2)}
+.mobile-nav{display:none;position:fixed;top:var(--nav);left:0;right:0;z-index:199;background:rgba(7,9,15,0.98);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);flex-direction:column;padding:12px 16px 16px;gap:6px}
+[data-theme="light"] .mobile-nav{background:rgba(247,249,255,0.98)}
+.mobile-nav.open{display:flex}
+.mobile-nav .nav-link{font-size:14px;padding:10px 14px;border-radius:10px;border:1px solid transparent}
+.mobile-nav .nav-link.active{color:var(--accent);border-color:var(--borderAcc);background:var(--accentBg)}
+@media(max-width:640px){
+  nav{padding:0 14px}
+  .nav-links{display:none}
+  .hamburger{display:flex}
+  .games-grid{grid-template-columns:1fr}
+  .filter-spacer{display:none}
+  .search-input{width:140px}
+  .page-header-inner{flex-direction:column;align-items:flex-start;gap:10px}
+}
+</style>
+</head>
+<body>
+<div class="blob blob-1"></div>
+<div class="blob blob-2"></div>
+
+<nav>
+  <a href="index.html" class="logo">G<em>S</em>TAKE</a>
+  <div class="nav-links">
+    <a href="index.html" class="nav-link">Home</a>
+    <a href="results.html" class="nav-link">Results</a>
+    <a href="betting.html" class="nav-link" style="color:var(--accent);border-color:var(--borderAcc);background:var(--accentBg)">Bet Now</a>
+  </div>
+  <div class="nav-right">
+    <div class="icon-btn" onclick="toggleTheme()"><svg data-lucide="moon" id="themeIco"></svg></div>
+    <button class="hamburger" onclick="toggleMobileNav()" id="hamburgerBtn"><svg data-lucide="menu" id="hamburgerIco"></svg></button>
+  </div>
+</nav>
+
+<div class="mobile-nav" id="mobileNav">
+  <a href="index.html" class="nav-link" onclick="closeMobileNav()">Home</a>
+  <a href="results.html" class="nav-link active" onclick="closeMobileNav()">Results</a>
+  <a href="betting.html" class="nav-link" style="color:var(--accent);border-color:var(--borderAcc);background:var(--accentBg)" onclick="closeMobileNav()">Bet Now</a>
+</div>
+
+<div class="page">
+  <div class="container">
+    <div class="page-header">
+      <div class="page-header-inner">
+        <div class="page-title">
+          <svg data-lucide="flag"></svg>
+          Match Results
+        </div>
+        <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+          <span class="live-badge"><span class="live-dot"></span>Live updating</span>
+          <span class="refresh-info"><svg data-lucide="refresh-cw"></svg><span id="lastRefresh">Just updated</span></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="winners-section">
+      <div class="section-label">Recent Big Winners</div>
+      <div class="carousel-outer">
+        <div class="carousel-header">
+          <div class="carousel-title"><svg data-lucide="trophy"></svg>People winning right now</div>
+          <div class="carousel-count" id="winnerCount">50 winners</div>
+        </div>
+        <div class="carousel-track-wrap">
+          <div class="carousel-track" id="carousel"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="filter-bar">
+      <button class="filter-btn active" onclick="setFilter('all',this)">All</button>
+      <button class="filter-btn" onclick="setFilter('FT',this)">Full Time</button>
+      <button class="filter-btn" onclick="setFilter('LIVE',this)">Live</button>
+      <button class="filter-btn" onclick="setFilter('SCHED',this)">Upcoming</button>
+      <div class="filter-spacer"></div>
+      <div class="search-wrap">
+        <svg data-lucide="search"></svg>
+        <input class="search-input" type="text" id="searchInput" placeholder="Search teams..." oninput="renderGames()">
+      </div>
+    </div>
+
+    <div class="games-grid" id="gamesGrid"></div>
+  </div>
+</div>
+
+<div class="toast" id="toast">
+  <svg data-lucide="info" id="toastIco"></svg>
+  <span id="toastMsg"></span>
+</div>
+
+<script>
+const API_BASE = 'http://localhost:8080';
+
+/* ── LOGOS: only teams/countries where we have a reliable logo ── */
+const TEAM_LOGOS = {
+  /* ── Premier League ── */
+  'Arsenal':      'https://upload.wikimedia.org/wikipedia/en/5/53/Arsenal_FC.svg',
+  'Chelsea':      'https://upload.wikimedia.org/wikipedia/en/c/cc/Chelsea_FC.svg',
+  'Man City':     'https://upload.wikimedia.org/wikipedia/en/e/eb/Manchester_City_FC_badge.svg',
+  'Liverpool':    'https://upload.wikimedia.org/wikipedia/en/0/0c/Liverpool_FC.svg',
+  'Man Utd':      'https://upload.wikimedia.org/wikipedia/en/7/7a/Manchester_United_FC_crest.svg',
+  'Tottenham':    'https://upload.wikimedia.org/wikipedia/en/b/b4/Tottenham_Hotspur.svg',
+  'Newcastle':    'https://upload.wikimedia.org/wikipedia/en/5/56/Newcastle_United_Logo.svg',
+  'Aston Villa':  'https://upload.wikimedia.org/wikipedia/en/9/9f/Aston_Villa_FC_crest_%282016%29.svg',
+  'West Ham':     'https://upload.wikimedia.org/wikipedia/en/c/c2/West_Ham_United_FC_logo.svg',
+  'Everton':      'https://upload.wikimedia.org/wikipedia/en/7/7c/Everton_FC_logo.svg',
+  /* ── La Liga ── */
+  'Real Madrid':  'https://upload.wikimedia.org/wikipedia/en/5/56/Real_Madrid_CF.svg',
+  'Barcelona':    'https://upload.wikimedia.org/wikipedia/en/4/47/FC_Barcelona_%28crest%29.svg',
+  'Atletico':     'https://upload.wikimedia.org/wikipedia/en/f/f4/Atletico_Madrid_2017_logo.svg',
+  'Sevilla':      'https://upload.wikimedia.org/wikipedia/en/8/8b/Sevilla_FC_logo.svg',
+  'Villarreal':   'https://upload.wikimedia.org/wikipedia/en/b/b9/Villarreal_CF_logo.svg',
+  /* ── Bundesliga ── */
+  'Bayern':       'https://upload.wikimedia.org/wikipedia/commons/1/1b/FC_Bayern_M%C3%BCnchen_logo_%282002%E2%80%932017%29.svg',
+  'Dortmund':     'https://upload.wikimedia.org/wikipedia/commons/6/67/Borussia_Dortmund_logo.svg',
+  'Leipzig':      'https://upload.wikimedia.org/wikipedia/en/0/04/RB_Leipzig_2014_logo.svg',
+  'Leverkusen':   'https://upload.wikimedia.org/wikipedia/en/5/59/Bayer_04_Leverkusen_logo.svg',
+  /* ── Ligue 1 ── */
+  'PSG':          'https://upload.wikimedia.org/wikipedia/en/a/a7/Paris_Saint-Germain_F.C..svg',
+  'Lyon':         'https://upload.wikimedia.org/wikipedia/en/e/e9/Olympique_Lyonnais.svg',
+  'Marseille':    'https://upload.wikimedia.org/wikipedia/commons/d/d8/Olympique_Marseille_logo.svg',
+  'Monaco':       'https://upload.wikimedia.org/wikipedia/en/e/ea/AS_Monaco_FC.svg',
+  /* ── Serie A ── */
+  'Juventus':     'https://upload.wikimedia.org/wikipedia/commons/1/15/Juventus_FC_2017_logo.svg',
+  'Inter':        'https://upload.wikimedia.org/wikipedia/commons/0/05/FC_Internazionale_Milano_2021.svg',
+  'AC Milan':     'https://upload.wikimedia.org/wikipedia/commons/d/d0/Logo_of_AC_Milan.svg',
+  'Napoli':       'https://upload.wikimedia.org/wikipedia/commons/2/2d/SSC_Napoli_2007.svg',
+  'Roma':         'https://upload.wikimedia.org/wikipedia/en/f/f7/AS_Roma_logo_%282017%29.svg',
+  'Lazio':        'https://upload.wikimedia.org/wikipedia/en/7/7f/SS_Lazio_Badge.svg',
+  /* ── Eredivisie / Portugal ── */
+  'Ajax':         'https://upload.wikimedia.org/wikipedia/en/7/79/Ajax_Amsterdam.svg',
+  'Porto':        'https://upload.wikimedia.org/wikipedia/en/f/f1/FC_Porto.svg',
+  'Benfica':      'https://upload.wikimedia.org/wikipedia/en/a/a2/SL_Benfica_logo.svg',
+  /* ── National Teams ── */
+  'Brazil':       'https://upload.wikimedia.org/wikipedia/commons/4/41/Flag_of_Brazil.svg',
+  'Argentina':    'https://upload.wikimedia.org/wikipedia/commons/1/1a/Flag_of_Argentina.svg',
+  'France':       'https://upload.wikimedia.org/wikipedia/commons/c/c3/Flag_of_France.svg',
+  'Germany':      'https://upload.wikimedia.org/wikipedia/commons/b/ba/Flag_of_Germany.svg',
+  'Spain':        'https://upload.wikimedia.org/wikipedia/commons/9/9a/Flag_of_Spain.svg',
+  'England':      'https://upload.wikimedia.org/wikipedia/commons/b/be/Flag_of_England.svg',
+  'Portugal':     'https://upload.wikimedia.org/wikipedia/commons/5/5c/Flag_of_Portugal.svg',
+  'Italy':        'https://upload.wikimedia.org/wikipedia/commons/0/03/Flag_of_Italy.svg',
+  'Netherlands':  'https://upload.wikimedia.org/wikipedia/commons/2/20/Flag_of_the_Netherlands.svg',
+  'Belgium':      'https://upload.wikimedia.org/wikipedia/commons/6/65/Flag_of_Belgium.svg',
+  'Morocco':      'https://upload.wikimedia.org/wikipedia/commons/2/2c/Flag_of_Morocco.svg',
+  'Senegal':      'https://upload.wikimedia.org/wikipedia/commons/f/fd/Flag_of_Senegal.svg',
+  'Ghana':        'https://upload.wikimedia.org/wikipedia/commons/1/19/Flag_of_Ghana.svg',
+  'Nigeria':      'https://upload.wikimedia.org/wikipedia/commons/7/79/Flag_of_Nigeria.svg',
+  'Cameroon':     'https://upload.wikimedia.org/wikipedia/commons/4/4f/Flag_of_Cameroon.svg',
+  'Ivory Coast':  'https://upload.wikimedia.org/wikipedia/commons/f/fe/Flag_of_C%C3%B4te_d%27Ivoire.svg',
+  'Japan':        'https://upload.wikimedia.org/wikipedia/commons/9/9e/Flag_of_Japan.svg',
+  'South Korea':  'https://upload.wikimedia.org/wikipedia/commons/0/09/Flag_of_South_Korea.svg',
+  'USA':          'https://upload.wikimedia.org/wikipedia/commons/a/a4/Flag_of_the_United_States.svg',
+  'Mexico':       'https://upload.wikimedia.org/wikipedia/commons/f/fc/Flag_of_Mexico.svg',
+  'Uruguay':      'https://upload.wikimedia.org/wikipedia/commons/f/fe/Flag_of_Uruguay.svg',
+  'Colombia':     'https://upload.wikimedia.org/wikipedia/commons/2/21/Flag_of_Colombia.svg',
+};
+
+const LEAGUE_LOGOS = {
+  'Premier League':   'https://upload.wikimedia.org/wikipedia/en/f/f2/Premier_League_Logo.svg',
+  'La Liga':          'https://upload.wikimedia.org/wikipedia/commons/5/54/LaLiga_Logo.png',
+  'Bundesliga':       'https://upload.wikimedia.org/wikipedia/en/d/df/Bundesliga_logo_%282017%29.svg',
+  'Ligue 1':          'https://upload.wikimedia.org/wikipedia/en/5/55/Ligue1_logo_2020.svg',
+  'Serie A':          'https://upload.wikimedia.org/wikipedia/en/e/e9/Serie_A_logo_2022.svg',
+  'Champions League': 'https://upload.wikimedia.org/wikipedia/en/b/bf/UEFA_Champions_League_logo_2.svg',
+  'Europa League':    'https://upload.wikimedia.org/wikipedia/en/c/c6/UEFA_Europa_League_logo_2021.svg',
+  'Eredivisie':       'https://upload.wikimedia.org/wikipedia/commons/0/0f/Eredivisie_nieuw_logo_2017-.svg',
+  'World Cup':        'https://upload.wikimedia.org/wikipedia/en/6/67/2022_FIFA_World_Cup.svg',
+  'AFCON':            'https://upload.wikimedia.org/wikipedia/en/3/3b/Africa_Cup_of_Nations_logo.svg',
+  'Nations League':   'https://upload.wikimedia.org/wikipedia/en/6/6e/UEFA_Nations_League_Logo.svg',
+  'International':    'https://upload.wikimedia.org/wikipedia/commons/7/73/Flag_of_UEFA.svg',
+};
+
+/* ── WINNERS ── */
+const WINNERS = [
+  {name:'Kwame A.',amt:'GH₵ 48,200',flag:'🇬🇭'},{name:'Emeka O.',amt:'₦ 312,500',flag:'🇳🇬'},
+  {name:'James K.',amt:'$ 8,750',flag:'🇺🇸'},{name:'Ama S.',amt:'GH₵ 92,400',flag:'🇬🇭'},
+  {name:'Chidi N.',amt:'₦ 580,000',flag:'🇳🇬'},{name:'Michael T.',amt:'$ 14,300',flag:'🇺🇸'},
+  {name:'Abena M.',amt:'GH₵ 67,800',flag:'🇬🇭'},{name:'Tunde B.',amt:'₦ 920,000',flag:'🇳🇬'},
+  {name:'Sarah W.',amt:'$ 22,000',flag:'🇺🇸'},{name:'Yaw F.',amt:'GH₵ 130,500',flag:'🇬🇭'},
+  {name:'Dele A.',amt:'₦ 1,200,000',flag:'🇳🇬'},{name:'Brian O.',amt:'$ 5,600',flag:'🇺🇸'},
+  {name:'Akosua D.',amt:'GH₵ 55,000',flag:'🇬🇭'},{name:'Segun P.',amt:'₦ 750,000',flag:'🇳🇬'},
+  {name:'Chris M.',amt:'$ 31,400',flag:'🇺🇸'},{name:'Efua K.',amt:'GH₵ 200,000',flag:'🇬🇭'},
+  {name:'Biodun L.',amt:'₦ 2,100,000',flag:'🇳🇬'},{name:'Tyler H.',amt:'$ 9,900',flag:'🇺🇸'},
+  {name:'Kofi E.',amt:'GH₵ 410,000',flag:'🇬🇭'},{name:'Akin R.',amt:'₦ 3,500,000',flag:'🇳🇬'},
+];
+
+/* ── DEMO FIXTURE POOL (only teams with known logos) ── */
+const FIXTURE_POOL = [
+  /* Premier League */
+  {homeTeam:'Arsenal',     awayTeam:'Chelsea',      leagueName:'Premier League', status:'FINISHED'},
+  {homeTeam:'Man City',    awayTeam:'Liverpool',    leagueName:'Premier League', status:'FINISHED'},
+  {homeTeam:'Man Utd',     awayTeam:'Tottenham',    leagueName:'Premier League', status:'LIVE'},
+  {homeTeam:'Newcastle',   awayTeam:'Aston Villa',  leagueName:'Premier League', status:'FINISHED'},
+  {homeTeam:'West Ham',    awayTeam:'Everton',      leagueName:'Premier League', status:'UPCOMING'},
+  /* La Liga */
+  {homeTeam:'Real Madrid', awayTeam:'Barcelona',    leagueName:'La Liga',        status:'FINISHED'},
+  {homeTeam:'Atletico',    awayTeam:'Sevilla',      leagueName:'La Liga',        status:'LIVE'},
+  {homeTeam:'Villarreal',  awayTeam:'Real Madrid',  leagueName:'La Liga',        status:'UPCOMING'},
+  /* Bundesliga */
+  {homeTeam:'Bayern',      awayTeam:'Dortmund',     leagueName:'Bundesliga',     status:'FINISHED'},
+  {homeTeam:'Leipzig',     awayTeam:'Leverkusen',   leagueName:'Bundesliga',     status:'LIVE'},
+  /* Ligue 1 */
+  {homeTeam:'PSG',         awayTeam:'Lyon',         leagueName:'Ligue 1',        status:'FINISHED'},
+  {homeTeam:'Monaco',      awayTeam:'Marseille',    leagueName:'Ligue 1',        status:'UPCOMING'},
+  /* Serie A */
+  {homeTeam:'Juventus',    awayTeam:'Inter',        leagueName:'Serie A',        status:'FINISHED'},
+  {homeTeam:'AC Milan',    awayTeam:'Napoli',       leagueName:'Serie A',        status:'LIVE'},
+  {homeTeam:'Roma',        awayTeam:'Lazio',        leagueName:'Serie A',        status:'FINISHED'},
+  /* UCL / UEL */
+  {homeTeam:'Ajax',        awayTeam:'Porto',        leagueName:'Champions League',status:'FINISHED'},
+  {homeTeam:'AC Milan',    awayTeam:'Benfica',      leagueName:'Champions League',status:'LIVE'},
+  {homeTeam:'PSG',         awayTeam:'Bayern',       leagueName:'Champions League',status:'FINISHED'},
+  {homeTeam:'Arsenal',     awayTeam:'Real Madrid',  leagueName:'Champions League',status:'UPCOMING'},
+  {homeTeam:'Juventus',    awayTeam:'Leipzig',      leagueName:'Europa League',   status:'FINISHED'},
+  {homeTeam:'Monaco',      awayTeam:'Porto',        leagueName:'Europa League',   status:'UPCOMING'},
+  /* National Teams — World Cup / AFCON / Nations League */
+  {homeTeam:'Brazil',      awayTeam:'Argentina',    leagueName:'International',   status:'FINISHED'},
+  {homeTeam:'France',      awayTeam:'Germany',      leagueName:'Nations League',  status:'FINISHED'},
+  {homeTeam:'Spain',       awayTeam:'England',      leagueName:'Nations League',  status:'LIVE'},
+  {homeTeam:'Portugal',    awayTeam:'Italy',        leagueName:'International',   status:'FINISHED'},
+  {homeTeam:'Netherlands', awayTeam:'Belgium',      leagueName:'Nations League',  status:'UPCOMING'},
+  {homeTeam:'Ghana',       awayTeam:'Nigeria',      leagueName:'AFCON',           status:'FINISHED'},
+  {homeTeam:'Morocco',     awayTeam:'Senegal',      leagueName:'AFCON',           status:'LIVE'},
+  {homeTeam:'Ivory Coast', awayTeam:'Cameroon',     leagueName:'AFCON',           status:'FINISHED'},
+  {homeTeam:'Japan',       awayTeam:'South Korea',  leagueName:'International',   status:'UPCOMING'},
+  {homeTeam:'Brazil',      awayTeam:'Colombia',     leagueName:'International',   status:'FINISHED'},
+  {homeTeam:'Mexico',      awayTeam:'USA',          leagueName:'International',   status:'LIVE'},
+  {homeTeam:'Uruguay',     awayTeam:'Argentina',    leagueName:'International',   status:'FINISHED'},
+  {homeTeam:'England',     awayTeam:'France',       leagueName:'International',   status:'UPCOMING'},
+];
+
+function randScore() {
+  const s = [0,0,1,1,1,2,2,2,3,3,4];
+  return [s[Math.floor(Math.random()*s.length)], s[Math.floor(Math.random()*s.length)]];
+}
+
+function buildDemoGames() {
+  const now = new Date();
+  const fmt = d => d.toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'});
+  // Shuffle pool and take up to 24
+  const shuffled = [...FIXTURE_POOL].sort(() => Math.random() - 0.5).slice(0, 24);
+  return shuffled.map((f, i) => {
+    const [hs, as] = f.status !== 'UPCOMING' ? randScore() : [null, null];
+    return { id: String(i+1), ...f, homeScore: hs, awayScore: as, matchDate: fmt(now) };
+  });
+}
+
+/* ── STATE ── */
+let allGames = [];
+let activeFilter = 'all';
+let carouselPos = 0;
+let carouselTimer = null;
+
+/* ── INIT ── */
+window.addEventListener('load', () => {
+  lucide.createIcons();
+  applyTheme();
+  buildCarousel();
+  fetchGames();
+  setInterval(fetchGames, 30000);
+});
+
+function applyTheme() {
+  const stored = localStorage.getItem('gstake_theme');
+  if (stored) {
+    document.documentElement.setAttribute('data-theme', stored);
+    document.getElementById('themeIco').setAttribute('data-lucide', stored === 'dark' ? 'moon' : 'sun');
+    lucide.createIcons();
+  }
+}
+
+function toggleTheme() {
+  const dark = document.documentElement.getAttribute('data-theme') === 'dark';
+  const next = dark ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', next);
+  localStorage.setItem('gstake_theme', next);
+  document.getElementById('themeIco').setAttribute('data-lucide', dark ? 'sun' : 'moon');
+  lucide.createIcons();
+}
+
+/* ── CAROUSEL ── */
+function buildCarousel() {
+  const shuffled = [...WINNERS].sort(() => Math.random() - 0.5);
+  const track = document.getElementById('carousel');
+  track.innerHTML = '';
+  shuffled.forEach(w => {
+    const chip = document.createElement('div');
+    chip.className = 'winner-chip';
+    chip.innerHTML = `<div class="winner-avatar">${w.flag}</div><div class="winner-info"><div class="winner-name">${w.name}</div><div class="winner-amount">${w.amt}</div></div>`;
+    track.appendChild(chip);
+  });
+  document.getElementById('winnerCount').textContent = shuffled.length + ' winners';
+  startCarousel();
+}
+
+function startCarousel() {
+  if (carouselTimer) clearInterval(carouselTimer);
+  carouselTimer = setInterval(() => {
+    const track = document.getElementById('carousel');
+    const chips = track.querySelectorAll('.winner-chip');
+    if (!chips.length) return;
+    const chipW = chips[0].offsetWidth + 10;
+    carouselPos++;
+    if (carouselPos >= chips.length - 3) carouselPos = 0;
+    track.style.transform = `translateX(-${carouselPos * chipW}px)`;
+  }, 2800);
+}
+
+/* ── FETCH (with demo fallback) ── */
+async function fetchGames() {
+  try {
+    const token = localStorage.getItem('gstake_token') || sessionStorage.getItem('gstake_token');
+    const headers = { 'Content-Type': 'application/json' };
+    if (token) headers['Authorization'] = `Bearer ${token}`;
+    const res = await fetch(`${API_BASE}/api/v1/games/public`, { headers });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const data = await res.json();
+    // Filter to only show teams we have logos for
+    const known = new Set(Object.keys(TEAM_LOGOS));
+    let fetched = (data.data || []).filter(g => known.has(g.homeTeam) && known.has(g.awayTeam));
+    // Merge with demo so grid is never empty
+    const demoGames = buildDemoGames();
+    const fetchedIds = new Set(fetched.map(g => `${g.homeTeam}|${g.awayTeam}`));
+    const extraDemo = demoGames.filter(g => !fetchedIds.has(`${g.homeTeam}|${g.awayTeam}`));
+    allGames = [...fetched, ...extraDemo];
+    document.getElementById('lastRefresh').textContent = 'Just updated';
+    renderGames();
+  } catch {
+    allGames = buildDemoGames();
+    renderGames();
+  }
+}
+
+/* ── FILTER ── */
+function setFilter(val, btn) {
+  activeFilter = val;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderGames();
+}
+
+/* ── RENDER ── */
+function renderGames() {
+  const grid = document.getElementById('gamesGrid');
+  const query = document.getElementById('searchInput').value.trim().toLowerCase();
+
+  let games = allGames.filter(g => {
+    const statusMap = {FINISHED:'FT', LIVE:'LIVE', UPCOMING:'SCHED'};
+    const mapped = statusMap[g.status] || g.status;
+    if (activeFilter !== 'all' && mapped !== activeFilter) return false;
+    if (query) {
+      const text = `${g.homeTeam} ${g.awayTeam} ${g.leagueName||''}`.toLowerCase();
+      if (!text.includes(query)) return false;
+    }
+    return true;
+  });
+
+  grid.innerHTML = '';
+
+  if (!games.length) {
+    grid.innerHTML = `<div class="state-box"><svg data-lucide="search-x"></svg><div class="state-title">No results found</div><div class="state-sub">Try a different filter or search term</div></div>`;
+    lucide.createIcons();
+    return;
+  }
+
+  const statusMap  = {FINISHED:'FT', LIVE:'LIVE', UPCOMING:'SCHED'};
+  const statusDisp = {FT:'Full Time', LIVE:'Live', SCHED:'Scheduled'};
+  const statusCls  = {FT:'status-ft', LIVE:'status-live', SCHED:'status-sched'};
+
+  games.forEach((g, i) => {
+    const st = statusMap[g.status] || 'FT';
+    const leagueKey = g.leagueName || '';
+    const leagueLogo = LEAGUE_LOGOS[leagueKey] || '';
+    const homeLogo   = TEAM_LOGOS[g.homeTeam] || '';
+    const awayLogo   = TEAM_LOGOS[g.awayTeam] || '';
+    const delay = Math.min(i * 45, 350);
+
+    const mkLogo = (logo, name) => logo
+      ? `<img src="${logo}" alt="${name}" style="width:30px;height:30px;object-fit:contain" onerror="this.style.display='none';this.nextSibling&&(this.nextSibling.style.display='')"><span style="display:none;font-size:12px;font-weight:700;color:var(--t2)">${getInitials(name)}</span>`
+      : `<span style="font-size:12px;font-weight:700;color:var(--t2)">${getInitials(name)}</span>`;
+
+    const leagueImgHtml = leagueLogo
+      ? `<img class="league-logo" src="${leagueLogo}" alt="${leagueKey}" onerror="this.style.display='none'">`
+      : '';
+
+    const scoreHtml = st !== 'SCHED'
+      ? `<div class="score-nums"><span class="score-num">${g.homeScore ?? 0}</span><span class="score-sep">–</span><span class="score-num">${g.awayScore ?? 0}</span></div>`
+      : `<div class="score-nums" style="font-size:16px;color:var(--t3);font-family:var(--ff);font-weight:600">vs</div>`;
+
+    const timeHtml = st === 'LIVE'
+      ? `<div class="match-time" style="color:var(--red);">● LIVE</div>`
+      : st === 'SCHED'
+      ? `<div class="match-time">Upcoming</div>`
+      : `<div class="match-time">Full Time</div>`;
+
+    const card = document.createElement('div');
+    card.className = 'game-card';
+    card.style.animationDelay = delay + 'ms';
+    card.innerHTML = `
+      <div class="card-top">
+        <div class="league-info">${leagueImgHtml}<span class="league-name">${leagueKey || 'Football'}</span></div>
+        <span class="status-pill ${statusCls[st]}">${statusDisp[st]}</span>
+      </div>
+      <div class="card-teams">
+        <div class="team-side">
+          <div class="team-logo-wrap">${mkLogo(homeLogo, g.homeTeam)}</div>
+          <div class="team-name">${g.homeTeam}</div>
+        </div>
+        <div class="score-center">${scoreHtml}${timeHtml}</div>
+        <div class="team-side">
+          <div class="team-logo-wrap">${mkLogo(awayLogo, g.awayTeam)}</div>
+          <div class="team-name">${g.awayTeam}</div>
+        </div>
+      </div>
+      <div class="card-footer">
+        <span class="card-date"><svg data-lucide="calendar"></svg>${g.matchDate || 'Today'}</span>
+        <a href="betting.html?match=${encodeURIComponent(g.homeTeam + ' vs ' + g.awayTeam)}" class="bet-btn">${st === 'SCHED' ? '🎯 Bet Now' : '📊 View Bet'}</a>
+      </div>`;
+    grid.appendChild(card);
+  });
+
+  lucide.createIcons();
+}
+
+function getInitials(name) {
+  return name.split(' ').map(w => w[0]).join('').slice(0,2).toUpperCase();
+}
+
+function toggleMobileNav() {
+  const nav = document.getElementById('mobileNav');
+  const ico = document.getElementById('hamburgerIco');
+  const open = nav.classList.toggle('open');
+  ico.setAttribute('data-lucide', open ? 'x' : 'menu');
+  lucide.createIcons();
+}
+function closeMobileNav() {
+  document.getElementById('mobileNav').classList.remove('open');
+  document.getElementById('hamburgerIco').setAttribute('data-lucide','menu');
+  lucide.createIcons();
+}
+function showToast(msg, type = 'ok') {
+  const t = document.getElementById('toast');
+  const ico = document.getElementById('toastIco');
+  document.getElementById('toastMsg').textContent = msg;
+  ico.setAttribute('data-lucide', type === 'ok' ? 'check-circle' : 'alert-circle');
+  t.className = 'toast show ' + type;
+  lucide.createIcons();
+  setTimeout(() => t.classList.remove('show'), 3500);
+}
+</script>
+</body>
+</html>
