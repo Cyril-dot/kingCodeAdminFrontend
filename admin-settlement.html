@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>BETCash Admin — Settlement & Results</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=Barlow+Condensed:wght@600;700;800&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+<link rel="stylesheet" href="admin-shared.css">
+<style>
+.settlement-card {
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: var(--rLg); padding: 1.25rem;
+  margin-bottom: 1rem; transition: border-color .2s;
+}
+.settlement-card:hover { border-color: var(--borderHov); }
+.settlement-card.selected { border-color: var(--accent); background: var(--accentBg); }
+
+.score-entry { display: flex; align-items: center; gap: .75rem; flex-wrap: wrap; margin-top: 1rem; }
+.score-input-wrap { display: flex; align-items: center; gap: .5rem; }
+.score-input { width: 56px; text-align: center; font-family: var(--ffC); font-size: 1.2rem; font-weight: 800; }
+.score-sep { font-family: var(--ffC); font-size: 1.3rem; font-weight: 800; color: var(--t3); }
+
+/* ═══════════════════════════════════════════════════════
+   ADMIN SETTLEMENT RESULT POPUP
+═══════════════════════════════════════════════════════ */
+.result-overlay {
+  position: fixed; inset: 0; z-index: 900;
+  display: none; align-items: center; justify-content: center; padding: 20px;
+}
+.result-overlay.show { display: flex; }
+.result-backdrop {
+  position: absolute; inset: 0;
+  background: rgba(0,0,0,0.82); backdrop-filter: blur(8px);
+}
+
+/* Confetti */
+.confetti-c { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
+.confetti-piece {
+  position: absolute; width: 8px; height: 8px; border-radius: 2px;
+  opacity: 0; animation: confettiFall 3s ease-in forwards;
+}
+@keyframes confettiFall {
+  0%   { opacity: 1; transform: translateY(-20px) rotate(0deg); }
+  100% { opacity: 0; transform: translateY(110vh) rotate(720deg); }
+}
+
+.result-card {
+  position: relative; z-index: 1;
+  background: var(--bg1); border: 1px solid rgba(245,166,35,0.35);
+  border-radius: 24px; padding: 32px 28px;
+  max-width: 440px; width: 100%; text-align: center;
+  box-shadow: 0 0 80px rgba(245,166,35,0.15), 0 24px 60px rgba(0,0,0,0.8);
+  animation: cardIn .5s cubic-bezier(.22,.68,0,1.2) both;
+}
+@keyframes cardIn {
+  from { opacity: 0; transform: scale(.85) translateY(20px); }
+  to   { opacity: 1; transform: none; }
+}
+
+.result-glow {
+  width: 72px; height: 72px;
+  background: var(--accentBg); border: 2px solid var(--borderAcc);
+  border-radius: 20px; display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 14px;
+  box-shadow: 0 0 40px rgba(245,166,35,0.3);
+  animation: accentPulse 2s ease-in-out infinite;
+}
+@keyframes accentPulse {
+  0%,100% { box-shadow: 0 0 40px rgba(245,166,35,0.3); }
+  50%      { box-shadow: 0 0 60px rgba(245,166,35,0.5); }
+}
+.result-glow svg { width: 32px; height: 32px; color: var(--accent); }
+
+.result-headline {
+  font-family: var(--ffC); font-size: 28px; font-weight: 800;
+  color: var(--t1); letter-spacing: .5px; margin-bottom: 4px;
+}
+.result-headline em { color: var(--accent); font-style: normal; }
+
+.result-match-tag {
+  font-size: 12px; color: var(--t2); margin-bottom: 16px; font-weight: 500;
+}
+
+/* Big scoreboard */
+.scoreboard {
+  background: var(--bg3); border: 1px solid var(--border);
+  border-radius: 16px; padding: 20px 16px; margin-bottom: 20px;
+  display: flex; align-items: center; justify-content: center; gap: 0;
+}
+.sb-team { flex: 1; }
+.sb-team-name {
+  font-size: 11px; color: var(--t2); font-weight: 600;
+  text-transform: uppercase; letter-spacing: .5px; margin-bottom: 6px;
+}
+.sb-score {
+  font-family: var(--ffC); font-size: 52px; font-weight: 800;
+  color: var(--accent); line-height: 1;
+  text-shadow: 0 0 24px rgba(245,166,35,0.4);
+}
+.sb-divider {
+  font-family: var(--ffC); font-size: 36px; font-weight: 800;
+  color: var(--t3); padding: 0 12px; margin-top: 18px;
+}
+
+/* Stats grid */
+.settle-stats {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 20px;
+}
+.settle-stat {
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: 12px; padding: 12px 8px; text-align: center;
+}
+.settle-stat-val {
+  font-family: var(--ffC); font-size: 22px; font-weight: 800;
+  color: var(--t1); line-height: 1;
+}
+.settle-stat-val.green { color: #22C55E; }
+.settle-stat-val.red   { color: #EF4444; }
+.settle-stat-val.acc   { color: var(--accent); }
+.settle-stat-lbl { font-size: 10px; color: var(--t3); margin-top: 4px; }
+
+.payout-box {
+  background: rgba(34,197,94,0.08); border: 1px solid rgba(34,197,94,0.25);
+  border-radius: 14px; padding: 14px; margin-bottom: 20px;
+}
+.payout-lbl {
+  font-size: 11px; color: #22C55E; font-weight: 600;
+  margin-bottom: 4px; text-transform: uppercase; letter-spacing: .7px;
+}
+.payout-amt {
+  font-family: var(--ffC); font-size: 32px; font-weight: 800;
+  color: #22C55E; letter-spacing: .5px; line-height: 1;
+}
+
+.result-dismiss {
+  width: 100%; padding: 13px; border: none; border-radius: 12px;
+  background: var(--accent); color: #000;
+  font-family: var(--ffC); font-size: 16px; font-weight: 800;
+  letter-spacing: .5px; cursor: pointer; transition: all .2s;
+  box-shadow: 0 4px 20px rgba(245,166,35,0.35);
+}
+.result-dismiss:hover { filter: brightness(1.08); transform: translateY(-1px); }
+</style>
+</head>
+<body>
+<div class="blob blob-1"></div>
+<div class="blob blob-2"></div>
+<nav class="top-nav" id="topNav"></nav>
+<aside class="sidebar" id="sidebar"></aside>
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+<main class="main">
+  <div class="page-content">
+    <div class="page-header">
+      <div>
+        <div class="page-title">Settlement & Results</div>
+        <div class="page-sub">Enter match results and auto-settle pending bets.</div>
+      </div>
+      <div class="page-actions">
+        <button class="btn btn-secondary btn-sm" onclick="loadGames()">
+          <svg data-lucide="refresh-cw"></svg> Refresh
+        </button>
+      </div>
+    </div>
+
+    <div class="alert alert-success" id="settleSuccess" style="margin-bottom:1rem">
+      <svg data-lucide="check-circle"></svg>
+      <span id="settleSuccessMsg"></span>
+    </div>
+    <div class="alert alert-error" id="settleError" style="margin-bottom:1rem">
+      <svg data-lucide="alert-circle"></svg>
+      <span id="settleErrorMsg"></span>
+    </div>
+
+    <!-- Search / Filter -->
+    <div class="filter-bar" style="margin-bottom:1.25rem">
+      <div class="search-wrap">
+        <svg data-lucide="search"></svg>
+        <input type="text" class="search-input" id="settleSearch"
+          placeholder="Search teams…" oninput="renderGames()">
+      </div>
+    </div>
+
+    <div id="gamesContainer">
+      <div style="text-align:center;padding:3rem;color:var(--t2)">Loading games…</div>
+    </div>
+
+  </div>
+</main>
+
+<!-- ═══════════════════════════════════════════════════════
+     ADMIN SETTLEMENT RESULT POPUP
+═══════════════════════════════════════════════════════ -->
+<div class="result-overlay" id="resultOverlay">
+  <div class="confetti-c" id="confettiC"></div>
+  <div class="result-backdrop" onclick="dismissResult()"></div>
+  <div class="result-card">
+    <div class="result-glow"><svg data-lucide="flag"></svg></div>
+    <div class="result-headline">Game <em>Settled!</em></div>
+    <div class="result-match-tag" id="rpMatch">—</div>
+
+    <div class="scoreboard">
+      <div class="sb-team">
+        <div class="sb-team-name" id="rpHome">Home</div>
+        <div class="sb-score" id="rpHomeScore">0</div>
+      </div>
+      <div class="sb-divider">–</div>
+      <div class="sb-team">
+        <div class="sb-team-name" id="rpAway">Away</div>
+        <div class="sb-score" id="rpAwayScore">0</div>
+      </div>
+    </div>
+
+    <div class="settle-stats">
+      <div class="settle-stat">
+        <div class="settle-stat-val acc" id="rpSettled">0</div>
+        <div class="settle-stat-lbl">Slips Settled</div>
+      </div>
+      <div class="settle-stat">
+        <div class="settle-stat-val green" id="rpWinners">0</div>
+        <div class="settle-stat-lbl">Winners 🏆</div>
+      </div>
+      <div class="settle-stat">
+        <div class="settle-stat-val red" id="rpLosers">0</div>
+        <div class="settle-stat-lbl">Losers</div>
+      </div>
+    </div>
+
+    <div class="payout-box">
+      <div class="payout-lbl">Total Paid Out to Winners</div>
+      <div class="payout-amt" id="rpPaid">GHS 0.00</div>
+    </div>
+
+    <button class="result-dismiss" onclick="dismissResult()">
+      Done — Back to Settlement
+    </button>
+  </div>
+</div>
+
+<script src="admin-api.js"></script>
+<script src="admin-sidebar.js"></script>
+<script>
+let ALL_GAMES = [];
+
+window.addEventListener('load', () => {
+  requireAuth();
+  injectAdminShell('admin-settlement.html');
+  loadGames();
+
+  // Pre-load game from URL param if coming from Games page
+  const params = new URLSearchParams(window.location.search);
+  const preGameId = params.get('gameId');
+  if (preGameId) {
+    setTimeout(() => {
+      const el = document.getElementById(`card-${preGameId}`);
+      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }, 600);
+  }
+});
+
+async function loadGames() {
+  try {
+    ALL_GAMES = await apiGetAllGames();
+    renderGames();
+  } catch (err) {
+    showAlert('error', 'Failed to load games: ' + err.message);
+  }
+}
+
+function renderGames() {
+  const search = document.getElementById('settleSearch').value.toLowerCase();
+  const settleable = ALL_GAMES.filter(g =>
+    g.status !== 'CANCELLED' &&
+    (!search || `${g.homeTeam} ${g.awayTeam}`.toLowerCase().includes(search))
+  ).sort((a, b) => new Date(a.matchDate) - new Date(b.matchDate));
+
+  if (!settleable.length) {
+    document.getElementById('gamesContainer').innerHTML =
+      `<div style="text-align:center;padding:3rem;color:var(--t2)">No games available for settlement.</div>`;
+    return;
+  }
+
+  const statusClass = { UPCOMING: 'upcoming', LIVE: 'live', FINISHED: 'finished', CANCELLED: 'cancelled' };
+
+  document.getElementById('gamesContainer').innerHTML = settleable.map(g => {
+    const isFinished = g.status === 'FINISHED';
+    const score = (g.homeScore !== null && g.homeScore !== undefined)
+      ? `<span style="font-family:var(--ffC);font-weight:800;color:var(--accent)">${g.homeScore} – ${g.awayScore}</span>`
+      : '';
+
+    return `<div class="settlement-card" id="card-${g.id}">
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.5rem">
+        <div>
+          <div style="font-weight:700;font-size:.95rem">${g.homeTeam} <span style="color:var(--t3)">vs</span> ${g.awayTeam}</div>
+          <div style="font-size:.75rem;color:var(--t2);margin-top:2px">${fmtDate(g.matchDate)}${g.bookingCode ? ' · ' + g.bookingCode : ''}</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:.5rem">
+          ${score}
+          <span class="badge badge-${statusClass[g.status] || 'upcoming'}">${g.status}</span>
+        </div>
+      </div>
+
+      ${!isFinished ? `
+      <div class="score-entry">
+        <div style="font-size:.78rem;color:var(--t2);font-weight:600;flex-basis:100%">Enter Final Score:</div>
+        <div class="score-input-wrap">
+          <input type="number" class="form-input score-input" id="h-${g.id}" min="0" placeholder="0">
+          <span class="score-sep">—</span>
+          <input type="number" class="form-input score-input" id="a-${g.id}" min="0" placeholder="0">
+        </div>
+        <button class="btn btn-primary btn-sm" id="settle-btn-${g.id}"
+          onclick="submitResult('${g.id}', '${g.homeTeam.replace(/'/g,"\\'")}', '${g.awayTeam.replace(/'/g,"\\'")}')">
+          <svg data-lucide="flag"></svg> Enter Result & Settle
+        </button>
+        <button class="btn btn-danger btn-sm"
+          onclick="cancelGameConfirm('${g.id}', '${g.homeTeam.replace(/'/g,"\\'")}', '${g.awayTeam.replace(/'/g,"\\'")}')">
+          <svg data-lucide="x-circle"></svg> Cancel Game
+        </button>
+      </div>` : `
+      <div style="margin-top:.65rem;font-size:.78rem;color:var(--t2)">
+        ✅ This game has been settled. Result: ${g.homeScore}–${g.awayScore}
+      </div>`}
+    </div>`;
+  }).join('');
+
+  lucide.createIcons();
+}
+
+async function submitResult(gameId, home, away) {
+  const homeScore = parseInt(document.getElementById(`h-${gameId}`).value, 10);
+  const awayScore = parseInt(document.getElementById(`a-${gameId}`).value, 10);
+
+  if (isNaN(homeScore) || isNaN(awayScore)) {
+    showAlert('error', 'Please enter valid scores for both teams.');
+    return;
+  }
+
+  // Loading state on button
+  const btn = document.getElementById(`settle-btn-${gameId}`);
+  if (btn) { btn.classList.add('loading'); btn.disabled = true; }
+
+  try {
+    // POST /api/v1/admin/games/{gameId}/result
+    const result = await apiEnterResult(gameId, homeScore, awayScore);
+
+    const idx = ALL_GAMES.findIndex(g => g.id === gameId);
+    if (idx >= 0) {
+      ALL_GAMES[idx].status    = 'FINISHED';
+      ALL_GAMES[idx].homeScore = homeScore;
+      ALL_GAMES[idx].awayScore = awayScore;
+    }
+
+    renderGames();
+    showSettlementPopup(result, home, away, homeScore, awayScore);
+
+  } catch (err) {
+    showAlert('error', err.message);
+    if (btn) { btn.classList.remove('loading'); btn.disabled = false; }
+  }
+}
+
+async function cancelGameConfirm(gameId, home, away) {
+  if (!confirm(`Cancel "${home} vs ${away}"? All pending bets will be refunded.`)) return;
+  try {
+    // POST /api/v1/admin/games/{gameId}/cancel
+    const result = await apiCancelGame(gameId);
+    const idx = ALL_GAMES.findIndex(g => g.id === gameId);
+    if (idx >= 0) ALL_GAMES[idx].status = 'CANCELLED';
+    showAlert('success', `Game cancelled. ${result.totalSlipsSettled} stake(s) refunded.`);
+    renderGames();
+  } catch (err) {
+    showAlert('error', err.message);
+  }
+}
+
+// ══════════════════════════════════════════════════════════════════
+// SETTLEMENT RESULT POPUP
+// ══════════════════════════════════════════════════════════════════
+
+function showSettlementPopup(r, home, away, homeScore, awayScore) {
+  document.getElementById('rpMatch').textContent     = `${home} vs ${away}`;
+  document.getElementById('rpHome').textContent      = home;
+  document.getElementById('rpAway').textContent      = away;
+  document.getElementById('rpHomeScore').textContent = homeScore;
+  document.getElementById('rpAwayScore').textContent = awayScore;
+  document.getElementById('rpSettled').textContent   = r.totalSlipsSettled ?? '—';
+  document.getElementById('rpWinners').textContent   = r.totalWinners ?? '—';
+  document.getElementById('rpLosers').textContent    = r.totalLosers ?? '—';
+  document.getElementById('rpPaid').textContent      =
+    `GHS ${Number(r.totalPayoutCredited ?? 0).toLocaleString(undefined, { minimumFractionDigits: 2 })}`;
+
+  spawnConfetti();
+
+  document.getElementById('resultOverlay').classList.add('show');
+  document.body.style.overflow = 'hidden';
+  lucide.createIcons();
+}
+
+function dismissResult() {
+  document.getElementById('resultOverlay').classList.remove('show');
+  document.body.style.overflow = '';
+}
+
+function spawnConfetti() {
+  const c = document.getElementById('confettiC');
+  c.innerHTML = '';
+  const colors = ['#F5A623','#22C55E','#60A5FA','#A78BFA','#fff','#FBBF24','#FB7185'];
+  for (let i = 0; i < 90; i++) {
+    const el = document.createElement('div');
+    el.className = 'confetti-piece';
+    el.style.cssText = `
+      left:${Math.random()*100}%;
+      background:${colors[Math.floor(Math.random()*colors.length)]};
+      width:${6+Math.random()*8}px;
+      height:${6+Math.random()*8}px;
+      border-radius:${Math.random() > .5 ? '50%' : '2px'};
+      animation-delay:${Math.random()*1.5}s;
+      animation-duration:${2+Math.random()*2}s;
+    `;
+    c.appendChild(el);
+  }
+}
+
+// ══════════════════════════════════════════════════════════════════
+// HELPERS
+// ══════════════════════════════════════════════════════════════════
+
+function showAlert(type, msg) {
+  const id    = type === 'success' ? 'settleSuccess' : 'settleError';
+  const msgId = type === 'success' ? 'settleSuccessMsg' : 'settleErrorMsg';
+  document.getElementById(msgId).textContent = msg;
+  const el = document.getElementById(id);
+  el.classList.add('show');
+  setTimeout(() => el.classList.remove('show'), 5000);
+  lucide.createIcons();
+}
+
+function fmtDate(d) {
+  return new Date(d).toLocaleString('en-GB', {
+    day: '2-digit', month: 'short', year: 'numeric',
+    hour: '2-digit', minute: '2-digit'
+  });
+}
+</script>
+</body>
+</html>
