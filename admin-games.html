@@ -231,13 +231,19 @@
 <div class="modal-backdrop" id="deleteAllModal">
   <div class="modal confirm-modal">
     <div class="confirm-text">
-      <div class="confirm-icon"><svg data-lucide="trash-2"></svg></div>
-      <div class="confirm-title">Delete All Games?</div>
+      <div class="confirm-icon" style="color:var(--danger)"><svg data-lucide="trash-2"></svg></div>
+      <div class="confirm-title">Delete ALL Games?</div>
       <div class="confirm-sub">
-        Only UPCOMING games without active bets will be deleted. Live, Finished, and Cancelled games are skipped.
+        <strong style="color:var(--danger)">This is irreversible.</strong>
+        Every game — regardless of status (Upcoming, Live, Finished, Cancelled) — and all their associated bets will be permanently deleted.
       </div>
     </div>
-    <div id="deleteAllProgress" style="display:none;margin:.75rem 0;font-size:.82rem;color:var(--t2);text-align:center;line-height:1.5"></div>
+    <div id="deleteAllProgress" style="display:none;margin:.75rem 0;font-size:.82rem;color:var(--t2);text-align:center;line-height:1.8">
+      <div id="deleteAllProgressText"></div>
+      <div id="deleteAllProgressBar" style="margin-top:.5rem;background:var(--surface2);border-radius:99px;height:4px;overflow:hidden">
+        <div id="deleteAllProgressFill" style="height:100%;background:var(--danger);width:0%;transition:width .3s ease;border-radius:99px"></div>
+      </div>
+    </div>
     <div class="modal-footer" style="justify-content:center">
       <button class="btn btn-secondary" onclick="closeModal('deleteAllModal')" id="deleteAllCancelBtn">Cancel</button>
       <button class="btn btn-danger" onclick="confirmDeleteAll()" id="deleteAllConfirmBtn">
@@ -328,7 +334,9 @@ function renderDesktopTable(filtered) {
           <button class="btn btn-sm" style="background:var(--accentBg);color:var(--accent);border-color:var(--borderAcc)" onclick="openStatusModal('${g.id}')">
             <svg data-lucide="toggle-left"></svg> Status
           </button>
-          ${g.status === 'UPCOMING' ? `<button class="btn btn-danger btn-sm" onclick="openDeleteModal('${g.id}')"><svg data-lucide="trash-2"></svg></button>` : ''}
+          <button class="btn btn-danger btn-sm" onclick="openDeleteModal('${g.id}')">
+            <svg data-lucide="trash-2"></svg>
+          </button>
         </div>
       </td>
     </tr>`;
@@ -373,7 +381,10 @@ function renderMobileCards(filtered) {
         <button class="btn btn-sm" style="background:rgba(96,165,250,.1);color:var(--blue);border-color:rgba(96,165,250,.3)" onclick="openCSModal('${g.id}')">
           <svg data-lucide="target"></svg> CS
         </button>
-        ${g.status === 'UPCOMING' ? `<button class="btn btn-danger btn-sm btn-icon-only" onclick="openDeleteModal('${g.id}')"><svg data-lucide="trash-2"></svg></button>` : ''}
+        <!-- Delete shown for ALL statuses on mobile too -->
+        <button class="btn btn-danger btn-sm btn-icon-only" onclick="openDeleteModal('${g.id}')">
+          <svg data-lucide="trash-2"></svg>
+        </button>
       </div>
     </div>`;
   }).join('');
@@ -493,12 +504,13 @@ async function setGameStatus(newStatus) {
   }
 }
 
+/* ── Single Game Delete ── */
 function openDeleteModal(id) {
   const g = GAMES.find(x => x.id === id);
   if (!g) return;
   document.getElementById('deleteGameId').value = id;
   document.getElementById('deleteConfirmMsg').textContent =
-    `"${g.homeTeam} vs ${g.awayTeam}" will be permanently deleted.`;
+    `"${g.homeTeam} vs ${g.awayTeam}" (${g.status}) will be permanently deleted.`;
   openModal('deleteModal');
 }
 
@@ -516,14 +528,17 @@ async function confirmDelete() {
     showAlert('error', err.message);
   } finally {
     btn.classList.remove('loading');
+    lucide.createIcons();
   }
 }
 
 /* ── Delete All Games ── */
 function openDeleteAllModal() {
+  // Reset modal state
   const progress = document.getElementById('deleteAllProgress');
   progress.style.display = 'none';
-  progress.textContent = '';
+  document.getElementById('deleteAllProgressText').textContent = '';
+  document.getElementById('deleteAllProgressFill').style.width = '0%';
   const btn = document.getElementById('deleteAllConfirmBtn');
   btn.disabled = false;
   btn.classList.remove('loading');
@@ -533,9 +548,8 @@ function openDeleteAllModal() {
 }
 
 async function confirmDeleteAll() {
-  const upcomingGames = GAMES.filter(g => g.status === 'UPCOMING');
-  if (!upcomingGames.length) {
-    showAlert('error', 'No UPCOMING games to delete.');
+  if (!GAMES.length) {
+    showAlert('error', 'No games to delete.');
     closeModal('deleteAllModal');
     return;
   }
@@ -543,37 +557,40 @@ async function confirmDeleteAll() {
   const btn = document.getElementById('deleteAllConfirmBtn');
   const cancelBtn = document.getElementById('deleteAllCancelBtn');
   const progress = document.getElementById('deleteAllProgress');
+  const progressText = document.getElementById('deleteAllProgressText');
+  const progressFill = document.getElementById('deleteAllProgressFill');
 
   btn.classList.add('loading');
   btn.disabled = true;
   cancelBtn.disabled = true;
   progress.style.display = 'block';
+  progressText.textContent = 'Sending request…';
+  progressFill.style.width = '30%';
 
-  let deleted = 0;
-  let failed = 0;
+  try {
+    // Single bulk API call — hits DELETE /api/v1/admin/games
+    const result = await apiDeleteAllGames();
+    progressFill.style.width = '100%';
+    progressText.textContent = 'Done!';
 
-  for (let i = 0; i < upcomingGames.length; i++) {
-    const g = upcomingGames[i];
-    progress.textContent = `Deleting ${i + 1} of ${upcomingGames.length}: ${g.homeTeam} vs ${g.awayTeam}…`;
-    try {
-      await apiDeleteGame(g.id);
-      GAMES = GAMES.filter(x => x.id !== g.id);
-      deleted++;
-    } catch (err) {
-      failed++;
-    }
-  }
+    // Clear local state
+    const deletedCount = GAMES.length;
+    GAMES = [];
 
-  btn.classList.remove('loading');
-  btn.disabled = false;
-  cancelBtn.disabled = false;
-  closeModal('deleteAllModal');
-  renderGamesTable();
+    setTimeout(() => {
+      closeModal('deleteAllModal');
+      renderGamesTable();
+      showAlert('success', `${result?.deletedCount ?? deletedCount} game${(result?.deletedCount ?? deletedCount) !== 1 ? 's' : ''} deleted successfully.`);
+    }, 400);
 
-  if (failed > 0) {
-    showAlert('error', `Done — ${deleted} deleted, ${failed} skipped (may have active bets).`);
-  } else {
-    showAlert('success', `${deleted} game${deleted !== 1 ? 's' : ''} deleted successfully.`);
+  } catch (err) {
+    progressFill.style.width = '0%';
+    progressText.textContent = '';
+    progress.style.display = 'none';
+    btn.classList.remove('loading');
+    btn.disabled = false;
+    cancelBtn.disabled = false;
+    showAlert('error', 'Failed to delete all games: ' + err.message);
   }
 }
 
