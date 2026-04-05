@@ -22,6 +22,9 @@
 .score-input { width: 56px; text-align: center; font-family: var(--ffC); font-size: 1.2rem; font-weight: 800; }
 .score-sep { font-family: var(--ffC); font-size: 1.3rem; font-weight: 800; color: var(--t3); }
 
+/* ═══════════════════════════════════════════════════════
+   ADMIN SETTLEMENT RESULT POPUP
+═══════════════════════════════════════════════════════ */
 .result-overlay {
   position: fixed; inset: 0; z-index: 900;
   display: none; align-items: center; justify-content: center; padding: 20px;
@@ -31,6 +34,8 @@
   position: absolute; inset: 0;
   background: rgba(0,0,0,0.82); backdrop-filter: blur(8px);
 }
+
+/* Confetti */
 .confetti-c { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
 .confetti-piece {
   position: absolute; width: 8px; height: 8px; border-radius: 2px;
@@ -40,6 +45,7 @@
   0%   { opacity: 1; transform: translateY(-20px) rotate(0deg); }
   100% { opacity: 0; transform: translateY(110vh) rotate(720deg); }
 }
+
 .result-card {
   position: relative; z-index: 1;
   background: var(--bg1); border: 1px solid rgba(245,166,35,0.35);
@@ -52,6 +58,7 @@
   from { opacity: 0; transform: scale(.85) translateY(20px); }
   to   { opacity: 1; transform: none; }
 }
+
 .result-glow {
   width: 72px; height: 72px;
   background: var(--accentBg); border: 2px solid var(--borderAcc);
@@ -65,12 +72,18 @@
   50%      { box-shadow: 0 0 60px rgba(245,166,35,0.5); }
 }
 .result-glow svg { width: 32px; height: 32px; color: var(--accent); }
+
 .result-headline {
   font-family: var(--ffC); font-size: 28px; font-weight: 800;
   color: var(--t1); letter-spacing: .5px; margin-bottom: 4px;
 }
 .result-headline em { color: var(--accent); font-style: normal; }
-.result-match-tag { font-size: 12px; color: var(--t2); margin-bottom: 16px; font-weight: 500; }
+
+.result-match-tag {
+  font-size: 12px; color: var(--t2); margin-bottom: 16px; font-weight: 500;
+}
+
+/* Big scoreboard */
 .scoreboard {
   background: var(--bg3); border: 1px solid var(--border);
   border-radius: 16px; padding: 20px 16px; margin-bottom: 20px;
@@ -90,6 +103,8 @@
   font-family: var(--ffC); font-size: 36px; font-weight: 800;
   color: var(--t3); padding: 0 12px; margin-top: 18px;
 }
+
+/* Stats grid */
 .settle-stats {
   display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 20px;
 }
@@ -105,6 +120,7 @@
 .settle-stat-val.red   { color: #EF4444; }
 .settle-stat-val.acc   { color: var(--accent); }
 .settle-stat-lbl { font-size: 10px; color: var(--t3); margin-top: 4px; }
+
 .payout-box {
   background: rgba(34,197,94,0.08); border: 1px solid rgba(34,197,94,0.25);
   border-radius: 14px; padding: 14px; margin-bottom: 20px;
@@ -117,6 +133,7 @@
   font-family: var(--ffC); font-size: 32px; font-weight: 800;
   color: #22C55E; letter-spacing: .5px; line-height: 1;
 }
+
 .result-dismiss {
   width: 100%; padding: 13px; border: none; border-radius: 12px;
   background: var(--accent); color: #000;
@@ -157,6 +174,7 @@
       <span id="settleErrorMsg"></span>
     </div>
 
+    <!-- Search / Filter -->
     <div class="filter-bar" style="margin-bottom:1.25rem">
       <div class="search-wrap">
         <svg data-lucide="search"></svg>
@@ -168,10 +186,11 @@
     <div id="gamesContainer">
       <div style="text-align:center;padding:3rem;color:var(--t2)">Loading games…</div>
     </div>
+
   </div>
 </main>
 
-<!-- SETTLEMENT RESULT POPUP -->
+<!-- ADMIN SETTLEMENT RESULT POPUP -->
 <div class="result-overlay" id="resultOverlay">
   <div class="confetti-c" id="confettiC"></div>
   <div class="result-backdrop" onclick="dismissResult()"></div>
@@ -179,6 +198,7 @@
     <div class="result-glow"><svg data-lucide="flag"></svg></div>
     <div class="result-headline">Game <em>Settled!</em></div>
     <div class="result-match-tag" id="rpMatch">—</div>
+
     <div class="scoreboard">
       <div class="sb-team">
         <div class="sb-team-name" id="rpHome">Home</div>
@@ -190,6 +210,7 @@
         <div class="sb-score" id="rpAwayScore">0</div>
       </div>
     </div>
+
     <div class="settle-stats">
       <div class="settle-stat">
         <div class="settle-stat-val acc" id="rpSettled">0</div>
@@ -204,20 +225,21 @@
         <div class="settle-stat-lbl">Losers</div>
       </div>
     </div>
+
     <div class="payout-box">
       <div class="payout-lbl">Total Paid Out to Winners</div>
       <div class="payout-amt" id="rpPaid">GHS 0.00</div>
     </div>
-    <button class="result-dismiss" onclick="dismissResult()">Done — Back to Settlement</button>
+
+    <button class="result-dismiss" onclick="dismissResult()">
+      Done — Back to Settlement
+    </button>
   </div>
 </div>
 
 <script src="admin-api.js"></script>
 <script src="admin-sidebar.js"></script>
 <script>
-// ── Base URLs ─────────────────────────────────────────────────────
-const ADMIN_CS_BASE = 'https://kingcodebackendgames.onrender.com/api/admin/correct-score';
-
 let ALL_GAMES = [];
 
 window.addEventListener('load', () => {
@@ -304,8 +326,8 @@ function renderGames() {
 }
 
 // ══════════════════════════════════════════════════════════════════
-// FIX: submitResult now calls BOTH the 1X2 settlement AND the
-//      correct score reveal endpoint in parallel.
+// FIX APPLIED HERE — added apiRevealCSMarket call after apiEnterResult
+// This is what was missing and causing correct score bets to never settle
 // ══════════════════════════════════════════════════════════════════
 async function submitResult(gameId, home, away) {
   const homeScore = parseInt(document.getElementById(`h-${gameId}`).value, 10);
@@ -320,36 +342,21 @@ async function submitResult(gameId, home, away) {
   if (btn) { btn.classList.add('loading'); btn.disabled = true; }
 
   try {
-    // ── Step 1: Settle 1X2 bets (existing call) ───────────────────
+    // Step 1: Settle 1X2 bets (unchanged)
     const result = await apiEnterResult(gameId, homeScore, awayScore);
 
-    // ── Step 2: Settle correct score bets (THE MISSING CALL) ──────
-    // Calls POST /api/admin/correct-score/{gameId}/reveal
-    // This is what actually settles correct score selections.
+    // Step 2: Settle correct score bets — THIS WAS THE MISSING CALL
+    // apiRevealCSMarket is defined in admin-api.js and calls
+    // POST /api/admin/correct-score/{gameId}/reveal
     try {
-      const token = getAuthToken(); // from admin-api.js
-      const csResponse = await fetch(`${ADMIN_CS_BASE}/${gameId}/reveal`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify({ homeScore, awayScore })
-      });
-
-      if (csResponse.ok) {
-        console.log(`[CS] Correct score market settled for game ${gameId} — ${homeScore}:${awayScore}`);
-      } else {
-        const errBody = await csResponse.json().catch(() => ({}));
-        // Already settled or no options — not a fatal error, just log it
-        console.warn('[CS] Correct score settle warning:', errBody.message || csResponse.status);
-      }
+      await apiRevealCSMarket(gameId, homeScore, awayScore);
+      console.log(`[CS] Correct score settled: ${homeScore}:${awayScore}`);
     } catch (csErr) {
-      // Don't block the main UI if CS call fails — log and continue
-      console.warn('[CS] Correct score settle failed:', csErr.message);
+      // Don't block main settlement if CS settle fails (e.g. already settled)
+      console.warn('[CS] Correct score settle warning:', csErr.message);
     }
 
-    // ── Step 3: Update local game state & show popup ──────────────
+    // Step 3: Update local state & show popup
     const idx = ALL_GAMES.findIndex(g => g.id === gameId);
     if (idx >= 0) {
       ALL_GAMES[idx].status    = 'FINISHED';
@@ -380,17 +387,8 @@ async function cancelGameConfirm(gameId, home, away) {
 }
 
 // ══════════════════════════════════════════════════════════════════
-// HELPERS — getAuthToken reads from wherever admin-api.js stores it
+// SETTLEMENT RESULT POPUP
 // ══════════════════════════════════════════════════════════════════
-
-function getAuthToken() {
-  // Try the common storage keys used in your app
-  return localStorage.getItem('primestakes_token')
-      || sessionStorage.getItem('primestakes_token')
-      || localStorage.getItem('admin_token')
-      || sessionStorage.getItem('admin_token')
-      || '';
-}
 
 function showSettlementPopup(r, home, away, homeScore, awayScore) {
   document.getElementById('rpMatch').textContent     = `${home} vs ${away}`;
@@ -405,6 +403,7 @@ function showSettlementPopup(r, home, away, homeScore, awayScore) {
     `GHS ${Number(r.totalPayoutCredited ?? 0).toLocaleString(undefined, { minimumFractionDigits: 2 })}`;
 
   spawnConfetti();
+
   document.getElementById('resultOverlay').classList.add('show');
   document.body.style.overflow = 'hidden';
   lucide.createIcons();
@@ -434,6 +433,10 @@ function spawnConfetti() {
     c.appendChild(el);
   }
 }
+
+// ══════════════════════════════════════════════════════════════════
+// HELPERS
+// ══════════════════════════════════════════════════════════════════
 
 function showAlert(type, msg) {
   const id    = type === 'success' ? 'settleSuccess' : 'settleError';
