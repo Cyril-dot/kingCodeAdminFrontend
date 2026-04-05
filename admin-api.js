@@ -170,6 +170,11 @@ async function apiDeleteGame(gameId) {
   return apiFetch(`${ADMIN_API}/games/${gameId}`, { method: 'DELETE' });
 }
 
+/** DELETE /api/v1/admin/games */
+async function apiDeleteAllGames() {
+  return apiFetch(`${ADMIN_API}/games`, { method: 'DELETE' });
+}
+
 /** POST /api/v1/admin/games/{gameId}/result */
 async function apiEnterResult(gameId, homeScore, awayScore) {
   return apiFetch(`${ADMIN_API}/games/${gameId}/result`, {
